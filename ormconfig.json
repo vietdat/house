@@ -1,0 +1,24 @@
+{
+    "type": "postgres",
+    "host": "pellefant.db.elephantsql.com",
+    "port": 5432,
+    "username": "paoizvqi",
+    "password": "YGcp43jmw_rsm6PMye638JwcjzRLpA86",
+    "database": "paoizvqi",
+   "synchronize": true,
+   "logging": false,
+   "entities": [
+      "src/entity/**/*.ts"
+   ],
+   "migrations": [
+      "src/migration/**/*.ts"
+   ],
+   "subscribers": [
+      "src/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+   }
+}
