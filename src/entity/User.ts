@@ -1,13 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BaseEntity } from "typeorm";
 import { ApiModel, ApiModelProperty } from "swagger-express-ts";
 import { encryptionService } from "../libs/encryption";
 
-@Entity()
+@Entity('user')
 @ApiModel({
     description: "User table",
     name: "User"
 })
-export class User {
+export class User extends BaseEntity{
     @PrimaryGeneratedColumn("uuid")
     @ApiModelProperty({
         description: "Id of version",
@@ -69,7 +69,7 @@ export class User {
     createdDate: Date;
 
     @BeforeInsert()
-    hashPassword(): Promise<string> {
+    async hashPassword() {
         return encryptionService.genSalt().then((salt: string) => {
             console.log(salt);
             return encryptionService
