@@ -2,14 +2,14 @@ import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 import { User } from "../entity/User";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
-import { controller, httpGet, interfaces, httpPost } from "inversify-express-utils";
+import { controller, httpGet, httpPost } from "inversify-express-utils";
 
 @ApiPath({
     path: "/user",
     name: "user"
 })
 @controller("/users")
-export class UserController implements interfaces.Controller {
+export class UserController {
 
     private userRepository = getRepository(User);
     public static TARGET_NAME: string = "UserController - 1";

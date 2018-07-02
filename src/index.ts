@@ -2,11 +2,7 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import { Request, Response } from "express";
 import * as swagger from "swagger-express-ts";
-import { SwaggerDefinitionConstant } from "swagger-express-ts";
-import { Routes } from "./route/user.routes";
-import { User } from "./entity/User";
 import { Container } from "inversify";
 import { UserController } from "./controller/UserController";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
@@ -47,19 +43,6 @@ createConnection().then(async connection => {
     });
 
     const app = server.build();
-
-    // register express routes from defined application routes
-    Routes.forEach(route => {
-        (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
-            const result = (new (route.controller as any))[route.action](req, res, next);
-            if (result instanceof Promise) {
-                result.then(result => result !== null && result !== undefined ? res.send(result) : undefined);
-
-            } else if (result !== null && result !== undefined) {
-                res.json(result);
-            }
-        });
-    });
 
     // start express server
     app.listen(3000);

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from "typeorm";
 import { ApiModel, ApiModelProperty } from "swagger-express-ts";
 import { encryptionService } from "../libs/encryption";
 
@@ -7,7 +7,7 @@ import { encryptionService } from "../libs/encryption";
     description: "User table",
     name: "User"
 })
-export class User extends BaseEntity{
+export class User {
     @PrimaryGeneratedColumn("uuid")
     @ApiModelProperty({
         description: "Id of version",
