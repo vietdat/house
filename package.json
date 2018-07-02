@@ -19,6 +19,7 @@
     "passport-facebook": "^2.1.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pg": "^7.4.3",
     "reflect-metadata": "^0.1.10",
     "request": "^2.87.0",
     "swagger-express-ts": "^1.0.0",

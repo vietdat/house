@@ -36,6 +36,11 @@ export class User {
         required: true
     })
     email: string;
+    @Column()
+    @ApiModelProperty({
+        description: "",
+        required: true
+    })
     password: string;
     facebook: {
         id: string,
@@ -56,13 +61,27 @@ export class User {
         name: string
     };
 
+    @Column()
+    @ApiModelProperty({
+        description: "",
+        required: true
+    })
+    createdDate: Date;
 
     @BeforeInsert()
-    public hashPassword(): Promise<string> {
-        return encryptionService
-            .hash(this.password, this.salt)
-            .then(
-            (hash: string) => this.password = hash
-            );
+    hashPassword(): Promise<string> {
+        return encryptionService.genSalt().then((salt: string) => {
+            console.log(salt);
+            return encryptionService
+                .hash(this.password, salt)
+                .then(
+                    (hash: string) => this.password = hash
+                )
+        });
+    }
+
+    @BeforeInsert()
+    updateDates() {
+        this.createdDate = new Date();
     }
 }
