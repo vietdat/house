@@ -1,8 +1,12 @@
-import { getRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
-import { User } from "../entity/User";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
 import { controller, httpGet, httpPost } from "inversify-express-utils";
+import { UserService } from "../service/UserService";
+import { StatusCode } from "../all/status-code";
+import { Message } from "../all/message";
+import {sprintf} from "sprintf-js";
+
+
 
 @ApiPath({
     path: "/user",
@@ -10,9 +14,8 @@ import { controller, httpGet, httpPost } from "inversify-express-utils";
 })
 @controller("/users")
 export class UserController {
-
-    private userRepository = getRepository(User);
     public static TARGET_NAME: string = "UserController - 1";
+    private userService = new UserService();
 
     @ApiOperationGet({
         description: "Get users objects list",
@@ -26,7 +29,11 @@ export class UserController {
     })
     @httpGet("/")
     async all(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.find();
+        try {
+            return response.json({success: true, data: this.userService.findAll()});
+        } catch(err) {
+            return next({statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, 'sadf'), err: err});
+        }
     }
 
 
@@ -43,8 +50,9 @@ export class UserController {
     })
     @httpGet("/{userId}")
     async one(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.findOne(request.params.id);
+        return this.userService.findOne(request.params.id);
     }
+
     @ApiOperationPost({
         description: "Post user object",
         summary: "Post user version",
@@ -58,16 +66,10 @@ export class UserController {
     })
     @httpPost("/")
     async save(request: Request, response: Response, next: NextFunction) {
-        try {
-            let instance = await this.userRepository.create(request.body);
-            return await this.userRepository.insert(instance);
-        } catch (err) {
-            response.json(err);
-        }
+        return this.userService.create(request.body);
     }
 
     async remove(request: Request, response: Response, next: NextFunction) {
-        await this.userRepository.remove(request.params.id);
+        await this.userService.remove(request.params.id);
     }
-
 }

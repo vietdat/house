@@ -6,6 +6,7 @@ import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
 import { UserController } from "./controller/UserController";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
+import { Error } from "../src/libs/error";
 
 createConnection().then(async connection => {
     const container = new Container();
@@ -37,8 +38,8 @@ createConnection().then(async connection => {
 
     server.setErrorConfig((app: any) => {
         app.use((err: Error, request: express.Request, response: express.Response, next: express.NextFunction) => {
-            console.error(err.stack);
-            response.status(500).send("Something broke!");
+            console.log(err.err ? err.err : err);
+            response.status(err.statusCode ? err.statusCode : 500).send({success: false, message: err.message ? err.message : 'Something fail'});
         });
     });
 
@@ -47,6 +48,6 @@ createConnection().then(async connection => {
     // start express server
     app.listen(3000);
 
-    console.log("Express server has started on port 3000.");
+    console.log("Server has started on port 3000.");
 
 }).catch(error => console.log(error));

@@ -36,30 +36,30 @@ export class User {
         required: true
     })
     email: string;
+
     @Column()
     @ApiModelProperty({
         description: "",
         required: true
     })
     password: string;
-    facebook: {
-        id: string,
-        token: string,
-        email: string,
-        name: string
-    };
-    twitter: {
-        id: string,
-        token: string,
-        displayName: string,
-        username: string
-    };
-    google: {
-        id: string,
-        token: string,
-        email: string,
-        name: string
-    };
+
+    @Column({type: "json", nullable: true})
+    @ApiModelProperty({
+        description: ""
+    })
+    facebook: any;
+
+    @Column({type: "json", nullable: true})
+    @ApiModelProperty({
+        description: ""
+    })
+    twitter: any;
+    @Column({type: "json", nullable: true})
+    @ApiModelProperty({
+        description: ""
+    })
+    google: any;
 
     @Column()
     @ApiModelProperty({
