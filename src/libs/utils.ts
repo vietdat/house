@@ -17,5 +17,13 @@ export class Utils {
         return compare;
     }
 
+    public createError = (statusCode, message, err) => {
+        return {
+            statusCode: statusCode,
+            message: message,
+            err: err
+        };
+    };
+
     // public hashPassword = (plain) => hashPassword(plain);
 }
