@@ -71,7 +71,6 @@ export class User {
     @BeforeInsert()
     async hashPassword() {
         return encryptionService.genSalt().then((salt: string) => {
-            console.log(salt);
             return encryptionService
                 .hash(this.password, salt)
                 .then(

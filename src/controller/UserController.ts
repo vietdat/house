@@ -4,9 +4,9 @@ import { controller, httpGet, httpPost } from "inversify-express-utils";
 import { UserService } from "../service/UserService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
-import {sprintf} from "sprintf-js";
-
-
+import * as passport from "passport";
+import { sprintf } from "sprintf-js";
+import { passportConfig } from "../libs/passport";
 
 @ApiPath({
     path: "/user",
@@ -14,6 +14,8 @@ import {sprintf} from "sprintf-js";
 })
 @controller("/users")
 export class UserController {
+    private passportC = new passportConfig();
+
     public static TARGET_NAME: string = "UserController - 1";
     private userService = new UserService();
 
@@ -30,12 +32,11 @@ export class UserController {
     @httpGet("/")
     async all(request: Request, response: Response, next: NextFunction) {
         try {
-            return response.json({success: true, data: this.userService.findAll()});
-        } catch(err) {
-            return next({statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, 'sadf'), err: err});
+            return response.json({ success: true, data: await this.userService.findAll() });
+        } catch (err) {
+            return next({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, 'sadf'), err: err });
         }
     }
-
 
     @ApiOperationGet({
         description: "Get user by id",
