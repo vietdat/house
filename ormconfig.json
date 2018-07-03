@@ -1,10 +1,10 @@
 {
     "type": "postgres",
-    "host": "pellefant.db.elephantsql.com",
+    "host": "210.2.86.35",
     "port": 5432,
-    "username": "paoizvqi",
-    "password": "YGcp43jmw_rsm6PMye638JwcjzRLpA86",
-    "database": "paoizvqi",
+    "username": "admin",
+    "password": "admin",
+    "database": "house",
    "synchronize": true,
    "logging": false,
    "entities": [
