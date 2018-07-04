@@ -9,11 +9,13 @@ import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { StatusCode } from "../all/status-code";
 import { encryptionService } from "../libs/encryption";
 import { Message } from "../all/message";
-
+import { passportConfig } from "../libs/passport";  
 
 @controller("/auth")
 export class Auth {
     private userService = new UserService();
+    private passportConf = new passportConfig();
+
     public initialize = () => {
         passport.use("jwt", this.getStrategy());
         return passport.initialize();
@@ -52,9 +54,14 @@ export class Auth {
         }
     }
 
-    @httpGet("/secret", passport.authenticate('jwt', { session: false }))
+    @httpGet("/secret",  passport.authenticate('jwt', { session: false }))
     async testToken(request: Request, response: Response, next: NextFunction) {
         response.json({ message: "Success! You can not see this without a token" });
+    }
+
+    @httpGet("/facebook", passport.authenticate('facebook', { session: false }))
+    async loginFacebook(request: Request, response: Response, next: NextFunction) {
+        response.json({ message: "Success! Login facebook success" });
     }
 
     private getStrategy = (): Strategy => {
