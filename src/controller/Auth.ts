@@ -5,7 +5,7 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 import { User } from "../entity/user";
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../service/UserService";
-import { controller, httpPost } from "inversify-express-utils";
+import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { StatusCode } from "../all/status-code";
 import { encryptionService } from "../libs/encryption";
 import { Message } from "../all/message";
@@ -36,7 +36,7 @@ export class Auth {
     }
 
     @httpPost("/login")
-    async login (request: Request, response: Response, next: NextFunction) {
+    async login(request: Request, response: Response, next: NextFunction) {
         try {
             let user = await this.userService.findOne({ email: request.body.email });
 
@@ -50,6 +50,11 @@ export class Auth {
         } catch (err) {
             return next({ statusCode: StatusCode.UNAUTHORIZED, message: Message.UNAUTHORIZED, err: err });
         }
+    }
+
+    @httpGet("/secret", passport.authenticate('jwt', { session: false }))
+    async testToken(request: Request, response: Response, next: NextFunction) {
+        response.json({ message: "Success! You can not see this without a token" });
     }
 
     private getStrategy = (): Strategy => {

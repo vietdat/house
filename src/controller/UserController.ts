@@ -32,7 +32,7 @@ export class UserController {
     @httpGet("/")
     async all(request: Request, response: Response, next: NextFunction) {
         try {
-            return response.json({success: true, data: this.userService.search()});
+            return response.json({success: true, data: await this.userService.search()});
         } catch(err) {
             return next({statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, 'sadf'), err: err});
         }
