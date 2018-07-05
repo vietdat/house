@@ -5,7 +5,6 @@ import * as passportTwitter from "passport-twitter";
 import * as passportGoogle from "passport-google-oauth";
 import * as _ from "lodash";
 import * as passportJWT from "passport-jwt";
-import { encryptionService } from "../libs/encryption";
 import { UserService } from "../service/UserService";
 import { Request, Response, NextFunction } from "express";
 

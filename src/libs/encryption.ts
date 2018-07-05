@@ -9,7 +9,7 @@ export class EncryptionService {
   }
 
   public hash (input: string, salt: string): Promise<string> {
-    return hash(input, salt);
+    return hash(input, salt)
   }
 
   public async compare (input: string, salt: string): Promise<boolean> {

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
-import { controller, httpGet, httpPost } from "inversify-express-utils";
+import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
 import { UserService } from "../service/UserService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
@@ -11,12 +11,12 @@ import { passportConfig } from "../libs/passport";
 
 @ApiPath({
     path: "/user",
-    name: "user"
+    name: "user",
 })
-@controller("/users")
+@controller("/user")
 export class UserController {
-    private passportC = new passportConfig();
     public static TARGET_NAME: string = "UserController - 1";
+    private passportC = new passportConfig();
     private userService = new UserService();
 
     @ApiOperationGet({
@@ -29,12 +29,12 @@ export class UserController {
             apiKeyHeader: []
         }
     })
-    @httpGet("/")
-    async all(request: Request, response: Response, next: NextFunction) {
+    @httpGet("/search")
+    public async search(request: Request, response: Response, next: NextFunction) {
         try {
-            return response.json({success: true, data: await this.userService.search()});
-        } catch(err) {
-            return next({statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, 'sadf'), err: err});
+            return response.json({ success: true, data: await this.userService.search() });
+        } catch (err) {
+            return next({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "error"), err });
         }
     }
 
@@ -49,8 +49,8 @@ export class UserController {
             200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
         }
     })
-    @httpGet("/{userId}")
-    async one(request: Request, response: Response, next: NextFunction) {
+    @httpGet("/byid/:userId")
+    async findById(request: Request, response: Response, next: NextFunction) {
         return this.userService.findOne(request.params.id);
     }
 
@@ -65,12 +65,12 @@ export class UserController {
             400: { description: "Parameters fail" }
         }
     })
-    @httpPost("/")
-    async save(request: Request, response: Response, next: NextFunction) {
+    @httpPut("/")
+    async createOne(request: Request, response: Response, next: NextFunction) {
         return this.userService.create(request.body);
     }
 
-    async remove(request: Request, response: Response, next: NextFunction) {
+    async deleteOne(request: Request, response: Response, next: NextFunction) {
         await this.userService.remove(request.params.id);
     }
 }
