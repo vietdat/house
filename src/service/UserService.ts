@@ -1,8 +1,11 @@
-import { getRepository, Repository } from "typeorm";
+import { getRepository, Repository, InsertResult, TreeChildren } from "typeorm";
 import { User } from "../entity/User";
+import * as typeData from "../libs/typeData";
+
 export class UserService {
     private userRepository: Repository<User> = getRepository(User);
-    async search() {
+
+    async search(): Promise<User[]> {
         let instances: User[];
 
         try {
@@ -18,7 +21,7 @@ export class UserService {
         return instances;
     }
 
-    async findOne(query: Object) {
+    async findOne(query: Object): Promise<User>  {
         let user: User;
 
         try {
@@ -34,7 +37,7 @@ export class UserService {
         return user;
     }
 
-    create(body: Object) {
+    create(body: Object): Promise<InsertResult> {
         let instance: User;
 
         try {
@@ -50,7 +53,7 @@ export class UserService {
         return this.userRepository.insert(instance);
     }
 
-    async update(user: User) {
+    async update(user: User): Promise<InsertResult> {
         let instance: User;
 
         try {
@@ -64,6 +67,48 @@ export class UserService {
         }
 
         return this.userRepository.insert(instance);
+    }
+
+    async findOrCreateFacebook(facebook: typeData.IFacebook): Promise<User> {
+        console.log(facebook);
+        let instance: User, user: User;
+
+        try {
+            user = await this.userRepository.findOne({email: facebook.email});
+        } catch (err) {
+            throw err;
+        }
+
+        if(!user) {
+            let body = {
+                facebook: facebook,
+                email: facebook.email,
+                givenName: facebook.displayName
+            }
+            try {
+                instance = this.userRepository.create(body);
+            } catch (err) {
+                throw err;
+            }
+    
+            if (!instance) {
+                throw new Error("Cannot create user!");
+            }
+
+            await this.userRepository.insert(instance);
+        }
+
+        return user;
+    }
+
+    async findOrCreateGoogle(google: typeData.IGoogle) {
+        console.log(google);
+        return google;
+    }
+
+    async findOrCreateTwitter(twitter: typeData.ITwitter) {
+        console.log(twitter);
+        return twitter;
     }
 
     remove(userId) {

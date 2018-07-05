@@ -61,8 +61,8 @@ createConnection().then(async connection => {
     app.use(passport.initialize());
     app.use(passport.session());
     // start express server
-    app.listen(3000);
+    app.listen(5000);
 
-    console.log("Server has started on port 3000.");
+    console.log("Server has started on port 5000.");
 
 }).catch(error => console.log(error));
