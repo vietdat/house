@@ -40,6 +40,6 @@
   },
   "scripts": {
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "start": "ts-node src/index.ts"
+    "start": "npm run tslint && ts-node src/index.ts"
   }
 }

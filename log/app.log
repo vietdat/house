@@ -26,3 +26,18 @@
 [2018-07-05T10:08:57.164] [DEBUG] default - FacebookTokenError: This authorization code has been used.
 [2018-07-05T10:09:38.198] [DEBUG] default - FacebookTokenError: This authorization code has been used.
 [2018-07-05T10:10:08.361] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T11:50:31.273] [DEBUG] default - Error: data and salt arguments required
+[2018-07-05T11:59:41.023] [DEBUG] default - Error: data and salt arguments required
+[2018-07-05T12:00:28.856] [DEBUG] default - Error: data and salt arguments required
+[2018-07-05T12:02:02.208] [DEBUG] default - Error: data and salt arguments required
+[2018-07-05T12:02:57.185] [DEBUG] default - Error: data and salt arguments required
+[2018-07-05T15:13:02.634] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T15:14:38.050] [DEBUG] default - Error: data and salt arguments required
+[2018-07-05T15:15:24.081] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T15:15:32.144] [DEBUG] default - Error: data and salt arguments required
+[2018-07-05T15:16:48.221] [DEBUG] default - Error: passport.initialize() middleware not in use
+[2018-07-05T15:26:53.908] [DEBUG] default - QueryFailedError: invalid input syntax for uuid: "facebook->id>882616035273530"
+[2018-07-05T15:29:34.106] [DEBUG] default - QueryFailedError: syntax error at or near "["
+[2018-07-05T15:30:07.069] [DEBUG] default - QueryFailedError: column "facebook" does not exist
+[2018-07-05T15:30:44.380] [DEBUG] default - QueryFailedError: column "facebook" does not exist
+[2018-07-05T15:34:28.767] [DEBUG] default - QueryFailedError: syntax error at or near "'user'"

@@ -6,7 +6,7 @@ import * as typeData from "../libs/typeData";
 export class UserService {
     private userRepository: Repository<User> = getRepository(User);
 
-    async search(): Promise<User[]> {
+    public async search(): Promise<User[]> {
         let instances: User[];
 
         try {
@@ -22,7 +22,7 @@ export class UserService {
         return instances;
     }
 
-    async findOne(query: Object): Promise<User>  {
+    public async findOne(query: object): Promise<User> {
         let user: User;
 
         try {
@@ -38,7 +38,7 @@ export class UserService {
         return user;
     }
 
-    create(body: Object): Promise<InsertResult> {
+    public create(body: object): Promise<InsertResult> {
         let instance: User;
 
         try {
@@ -54,7 +54,7 @@ export class UserService {
         return this.userRepository.insert(instance);
     }
 
-    async update(user: User): Promise<InsertResult> {
+    public async update(user: User): Promise<InsertResult> {
         let instance: User;
 
         try {
@@ -70,53 +70,48 @@ export class UserService {
         return this.userRepository.insert(instance);
     }
 
-    async findOrCreateFacebook(facebook): Promise<User> {
+    public async findOrCreateFacebook(facebook): Promise<User> {
         let user: User;
-        console.log(facebook);
-        let query = sprintf('facebook->id>%s',facebook.id);
-        console.log(query);
+        const query = sprintf("SELECT * FROM public.\"user\" WHERE CAST(facebook->'id' AS STRING)=%s", facebook.id);
         try {
             user = await this.userRepository.query(query);
         } catch (err) {
             throw err;
         }
 
-        if(!user) {
-            let body = {
-                facebook: facebook,
+        if (!user) {
+            const body = {
+                facebook: {
+                    id: facebook.id,
+                    email: facebook.email
+                },
                 email: facebook.email,
-                givenName: facebook.displayName,
-                avatar: sprintf('https://graph.facebook.com/%s/picture?type=large', facebook.id)
-            }
+                givenName: facebook.name.givenName,
+                familyName: facebook.name.familyName,
+                password: "fasjkdfbgu2w121"
+            };
             try {
                 user = await this.userRepository.create(body);
             } catch (err) {
                 throw err;
             }
-    
-            if (!user) {
-                throw "Cannot create user!";
-            }
 
             await this.userRepository.insert(user);
-        } else {
-            throw "Cannot create sadfsdf!";
         }
-
         return user;
     }
 
-    async findOrCreateGoogle(google: typeData.IGoogle) {
+    public async findOrCreateGoogle(google: typeData.IGoogle) {
         console.log(google);
         return google;
     }
 
-    async findOrCreateTwitter(twitter: typeData.ITwitter) {
+    public async findOrCreateTwitter(twitter: typeData.ITwitter) {
         console.log(twitter);
         return twitter;
     }
 
-    remove(userId) {
+    public remove(userId) {
 
         try {
             this.userRepository.remove(userId);

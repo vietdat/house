@@ -1,17 +1,18 @@
 export interface IFacebook {
-    id: string,
+    id: string;
     email: string;
-    displayName: string;
+    familyName: string;
+    givenName: string;
 }
 
 export interface IGoogle {
-    id: string,
+    id: string;
     email: string;
     displayName: string;
 }
 
 export interface ITwitter {
-    id: string,
+    id: string;
     email: string;
     displayName: string;
 }

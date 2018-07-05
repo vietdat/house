@@ -7,7 +7,7 @@ import { Message } from "../all/message";
 // import * as passport from "passport";
 import { sprintf } from "sprintf-js";
 import { PassportConfig } from "../libs/passport";
-// import { getLogger, Logger  } from 'log4js';
+// import { getLogger, Logger  } from "log4js";
 
 @ApiPath({
     path: "/user",

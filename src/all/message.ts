@@ -1,5 +1,5 @@
 export class Message {
-    static readonly ACCEPTED = 'Not accepted %s';
-    static readonly UNAUTHORIZED = 'Authenticate fail';
-    static readonly PASSWORD_INCORRECT = 'password or email incorrect'
+    public static readonly ACCEPTED = "Not accepted %s";
+    public static readonly UNAUTHORIZED = "Authenticate fail";
+    public static readonly PASSWORD_INCORRECT = "password or email incorrect";
 }

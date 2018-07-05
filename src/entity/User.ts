@@ -59,37 +59,37 @@ export class User {
     })
     public birthDate: string;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
     public gender: string;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
     public language: string;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
     public referralCode: string;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
     public reference: string;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
     public active: boolean;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
@@ -101,21 +101,21 @@ export class User {
     })
     public address: any;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
         required: true
     })
     public postCode: string;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
         required: true
     })
     public introduce: string;
 
-    @Column("simple-array")
+    @Column({type: "simple-array",  nullable: true})
     @ApiModelProperty({
         description: "",
         required: true
@@ -140,7 +140,7 @@ export class User {
     })
     public google: typeData.IGoogle;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: ""
     })
@@ -152,7 +152,7 @@ export class User {
     })
     public bank: any;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
         required: true
