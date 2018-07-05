@@ -50,7 +50,6 @@ export class UserService {
         if (!instance) {
             throw new Error("Cannot create user!");
         }
-
         return this.userRepository.insert(instance);
     }
 

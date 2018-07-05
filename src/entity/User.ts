@@ -67,7 +67,7 @@ export class User {
 
     @Column({ nullable: true })
     @ApiModelProperty({
-        description: "",
+        description: ""
     })
     public language: string;
 
@@ -83,7 +83,7 @@ export class User {
     })
     public reference: string;
 
-    @Column({ nullable: true })
+    @Column({ type: Boolean, default: true })
     @ApiModelProperty({
         description: "",
     })
@@ -115,10 +115,9 @@ export class User {
     })
     public introduce: string;
 
-    @Column({type: "simple-array",  nullable: true})
+    @Column({ type: "simple-array", nullable: true })
     @ApiModelProperty({
-        description: "",
-        required: true
+        description: ""
     })
     public identifies: string[];
 

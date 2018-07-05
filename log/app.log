@@ -1,4 +1,5 @@
 [2018-07-05T08:35:58.621] [DEBUG] default - QueryFailedError: null value in column "familyName" violates not-null constraint
+<<<<<<< HEAD
 [2018-07-05T08:39:48.025] [DEBUG] default - Error: User not found!
     at UserService.<anonymous> (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:34:19)
     at step (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:32:23)
@@ -41,3 +42,12 @@
 [2018-07-05T15:30:07.069] [DEBUG] default - QueryFailedError: column "facebook" does not exist
 [2018-07-05T15:30:44.380] [DEBUG] default - QueryFailedError: column "facebook" does not exist
 [2018-07-05T15:34:28.767] [DEBUG] default - QueryFailedError: syntax error at or near "'user'"
+=======
+[2018-07-05T13:36:42.799] [DEBUG] default - QueryFailedError: null value in column "language" violates not-null constraint
+[2018-07-05T13:44:25.562] [DEBUG] default - QueryFailedError: null value in column "active" violates not-null constraint
+[2018-07-05T14:06:01.751] [DEBUG] default - QueryFailedError: null value in column "identifies" violates not-null constraint
+[2018-07-05T14:06:23.883] [DEBUG] default - QueryFailedError: null value in column "identifies" violates not-null constraint
+[2018-07-05T14:11:09.508] [DEBUG] default - QueryFailedError: null value in column "identifies" violates not-null constraint
+[2018-07-05T14:15:45.460] [DEBUG] default - QueryFailedError: null value in column "company" violates not-null constraint
+[2018-07-05T14:17:19.849] [DEBUG] default - QueryFailedError: duplicate key value violates unique constraint "UQ_f2578043e491921209f5dadd080"
+>>>>>>> 84486b1d1d0cf1dabffb2405cd04184a375f4314
