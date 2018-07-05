@@ -8,71 +8,73 @@ import * as passportJWT from "passport-jwt";
 import { UserService } from "../service/UserService";
 import { Request, Response, NextFunction } from "express";
 
-export class passportConfig {
+export class PassportConfig {
     private userService = new UserService();
 
-    init() {
-        const LocalStrategy = passportLocal.Strategy;
+    public init() {
+        const localStrategy = passportLocal.Strategy;
         const ExtractJwt = passportJWT.ExtractJwt;
-        const JwtStrategy = passportJWT.Strategy;
-        const FacebookStrategy = passportFacebook.Strategy;
-        const TwitterStrategy = passportTwitter.Strategy;
-        const GoogleStrategy = passportGoogle.OAuth2Strategy;
+        const jwtStrategy = passportJWT.Strategy;
+        const facebookStrategy = passportFacebook.Strategy;
+        const twitterStrategy = passportTwitter.Strategy;
+        const googleStrategy = passportGoogle.OAuth2Strategy;
 
-        var jwtOptions = {
+        const jwtOptions = {
             jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt"),
             secretOrKey: "Fami@123"
         };
 
-        var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
-            let userService = new UserService();
-            // console.log('payload received', jwt_payload);
-            userService.findOne({ id: jwt_payload.id })
-                .then(user => {
-                    if (user) {
-                        next(null, user);
-                    } else {
-                        next(null, false);
-                    }
-                });
+        const strategy = new jwtStrategy(jwtOptions, async (jwtPayload, next) => {
+            const userService = new UserService();
+            // console.log('payload received', jwtPayload);
+            let user;
+            try {
+                user = await userService.findOne({ id: jwtPayload.id });
+            } catch (err) {
+                next(null, false);
+            }
+
+            user ? next(null, user) : next(null, false);
         });
         passport.use(strategy);
 
-        passport.serializeUser<any, any>((user, done) => {
-            done(undefined, user.id);
+        passport.serializeUser<any, any>((user, next) => {
+            next(undefined, user.id);
         });
 
-
-        passport.deserializeUser((id, done) => {
-            this.userService.findOne(id).then(user => {
-                done(null, user);
-            });
+        passport.deserializeUser(async (id, next) => {
+            let user;
+            try {
+                user = await this.userService.findOne(id);
+            } catch (err) {
+                next(null, false);
+            }
+            user ? next(null, user) : next(null, false);
         });
 
-        passport.use(new FacebookStrategy({
+        passport.use(new facebookStrategy({
             clientID: "823733734463471",
             clientSecret: "e492d9b28db6f1dc11f76113306f311e",
             callbackURL: "http://localhost:3000/auth/facebook/"
         },
-            function (accessToken, refreshToken, profile, cb) {
-                let userService = new UserService();
-                userService.findOrCreateFacebook(profile)
-                    .then(user => {
-                        if (user) {
-                            return cb(null, user);
-                        } else {
-                            return cb('Login facebook fail');
-                        }
-                    });
+            async (accessToken, refreshToken, profile, next) => {
+                const userService = new UserService();
+                let user;
+                try {
+                    user = await userService.findOrCreateFacebook(profile)
+                } catch (err) {
+                    next(err);
+                }
+                user ? next(null, user) : next(new Error("Login facebook fail"));
             }
         ));
 
-        passport.use(new GoogleStrategy({
+        passport.use(new googleStrategy({
             clientID: "348835430049-c0djdielndt2kgi667pj1esvfq5ogdtq.apps.googleusercontent.com",
             clientSecret: "cf86E9dNorD96kWtLk6Tjkfr",
             callbackURL: "http://localhost:3000/auth/google/"
         },
-            function (accessToken, refreshToken, profile, cb) {
+            (accessToken, refreshToken, profile, cb) => {
                 let userService = new UserService();
                 userService.findOrCreateGoogle(profile)
                     .then(user => {
