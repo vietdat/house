@@ -1,0 +1,1 @@
+[2018-07-05T08:35:58.621] [DEBUG] default - QueryFailedError: null value in column "familyName" violates not-null constraint

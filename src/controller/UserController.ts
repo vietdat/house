@@ -13,7 +13,7 @@ import { passportConfig } from "../libs/passport";
     path: "/user",
     name: "user"
 })
-@controller("/users")
+@controller("/user")
 export class UserController {
     private passportC = new passportConfig();
     public static TARGET_NAME: string = "UserController - 1";
