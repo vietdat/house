@@ -1,1 +1,28 @@
 [2018-07-05T08:35:58.621] [DEBUG] default - QueryFailedError: null value in column "familyName" violates not-null constraint
+[2018-07-05T08:39:48.025] [DEBUG] default - Error: User not found!
+    at UserService.<anonymous> (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:34:19)
+    at step (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:32:23)
+    at Object.next (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:13:53)
+    at fulfilled (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:4:58)
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7)
+[2018-07-05T09:15:34.514] [DEBUG] default - FacebookTokenError: Error validating verification code. Please make sure your redirect_uri is identical to the one you used in the OAuth dialog request
+[2018-07-05T09:16:34.764] [DEBUG] default - FacebookTokenError: Error validating verification code. Please make sure your redirect_uri is identical to the one you used in the OAuth dialog request
+[2018-07-05T09:24:24.275] [DEBUG] default - FacebookTokenError: Error validating verification code. Please make sure your redirect_uri is identical to the one you used in the OAuth dialog request
+[2018-07-05T09:25:12.790] [DEBUG] default - FacebookTokenError: Error validating verification code. Please make sure your redirect_uri is identical to the one you used in the OAuth dialog request
+[2018-07-05T09:29:56.498] [DEBUG] default - FacebookTokenError: Error validating verification code. Please make sure your redirect_uri is identical to the one you used in the OAuth dialog request
+[2018-07-05T09:37:02.499] [DEBUG] default - FacebookTokenError: This authorization code has expired.
+[2018-07-05T09:37:22.372] [DEBUG] default - FacebookTokenError: Error validating verification code. Please make sure your redirect_uri is identical to the one you used in the OAuth dialog request
+[2018-07-05T09:37:32.566] [DEBUG] default - FacebookTokenError: Error validating verification code. Please make sure your redirect_uri is identical to the one you used in the OAuth dialog request
+[2018-07-05T09:48:30.174] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T09:48:44.093] [DEBUG] default - FacebookTokenError: This authorization code has expired.
+[2018-07-05T09:51:12.874] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T09:51:58.228] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T09:53:23.461] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T09:54:10.649] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T09:56:20.958] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T09:58:12.628] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T10:06:29.807] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T10:08:57.164] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T10:09:38.198] [DEBUG] default - FacebookTokenError: This authorization code has been used.
+[2018-07-05T10:10:08.361] [DEBUG] default - FacebookTokenError: This authorization code has been used.

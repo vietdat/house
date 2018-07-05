@@ -53,9 +53,11 @@ export class passportConfig {
         passport.use(new FacebookStrategy({
             clientID: "823733734463471",
             clientSecret: "e492d9b28db6f1dc11f76113306f311e",
-            callbackURL: "http://localhost:3000/auth/facebook/"
+            callbackURL: "https://localhost:5000/auth/facebook",
+            profileFields: ["name", "email", "link", "locale", "timezone"],
+            passReqToCallback: true
         },
-            function (accessToken, refreshToken, profile, cb) {
+            function (req, accessToken, refreshToken, profile, cb) {
                 let userService = new UserService();
                 userService.findOrCreateFacebook(profile)
                     .then(user => {
@@ -73,7 +75,7 @@ export class passportConfig {
             clientSecret: "cf86E9dNorD96kWtLk6Tjkfr",
             callbackURL: "http://localhost:3000/auth/google/"
         },
-            function (accessToken, refreshToken, profile, cb) {
+            function (req, accessToken, refreshToken, profile, cb) {
                 let userService = new UserService();
                 userService.findOrCreateGoogle(profile)
                     .then(user => {
@@ -91,7 +93,7 @@ export class passportConfig {
             consumerSecret: "ThcE4yRMjRrRLyPmXEPxffld54TZ5H77KKZOX2HSHHhTg6wTzo",
             callbackURL: "http://localhost:3000/auth/twitter/"
         },
-            function (accessToken, refreshToken, profile, cb) {
+            function (req, accessToken, refreshToken, profile, cb) {
                 let userService = new UserService();
                 userService.findOrCreateTwitter(profile)
                     .then(user => {

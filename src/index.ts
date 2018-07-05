@@ -14,15 +14,18 @@ import { Error } from "../src/libs/error";
 import { passportConfig } from "./libs/passport";
 import { Log } from "./libs/log";
 
+import * as https from "https";
+import * as fs from "fs";
+
 createConnection().then(async connection => {
     const container = new Container();
     const passportC = new passportConfig();
-    let log : Log = new Log();
+    let log: Log = new Log();
     passportC.init();
     container.bind<interfaces.Controller>(TYPE.Controller)
         .to(UserController).inSingletonScope().whenTargetNamed(UserController.TARGET_NAME);
-    // container.bind<interfaces.Controller>(TYPE.Controller)
-    //     .to(Auth).inSingletonScope().whenTargetNamed("auth");
+    container.bind<interfaces.Controller>(TYPE.Controller)
+        .to(Auth).inSingletonScope().whenTargetNamed("auth");
 
     // create server
     const server = new InversifyExpressServer(container);
@@ -50,18 +53,28 @@ createConnection().then(async connection => {
         app.use((err: Error, request: express.Request, response: express.Response, next: express.NextFunction) => {
             // console.log(err.err ? err.err : err);
             log.debug(err.err ? err.err : err.toString());
-            response.status(err.statusCode ? err.statusCode : 500).send({success: false, message: err.message ? err.message : 'Something fail'});
+            response.status(err.statusCode ? err.statusCode : 500).send({ success: false, message: err.message ? err.message : 'Something fail' });
         });
     });
 
-    
+
     const app = server.build();
 
     console.log(passport.initialize());
     app.use(passport.initialize());
     app.use(passport.session());
     // start express server
-    app.listen(5000);
+
+    const options = {
+        key: fs.readFileSync("../../key-20180704-112014.pem"),
+        cert: fs.readFileSync("../../cert-20180704-112014.crt"),
+        requestCert: false,
+        rejectUnauthorized: false
+    };
+
+    https.createServer(options, app).listen(5000);
+
+    // app.listen(5000);
 
     console.log("Server has started on port 5000.");
 

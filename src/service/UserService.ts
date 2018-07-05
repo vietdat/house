@@ -1,5 +1,6 @@
 import { getRepository, Repository, InsertResult, TreeChildren } from "typeorm";
 import { User } from "../entity/User";
+import { sprintf } from "sprintf-js";
 import * as typeData from "../libs/typeData";
 
 export class UserService {
@@ -69,12 +70,13 @@ export class UserService {
         return this.userRepository.insert(instance);
     }
 
-    async findOrCreateFacebook(facebook: typeData.IFacebook): Promise<User> {
-        console.log(facebook);
+    async findOrCreateFacebook(facebook): Promise<User> {
         let user: User;
-
+        console.log(facebook);
+        let query = sprintf('facebook->id>%s',facebook.id);
+        console.log(query);
         try {
-            user = await this.userRepository.findOne({email: facebook.email});
+            user = await this.userRepository.query(query);
         } catch (err) {
             throw err;
         }
@@ -83,7 +85,8 @@ export class UserService {
             let body = {
                 facebook: facebook,
                 email: facebook.email,
-                givenName: facebook.displayName
+                givenName: facebook.displayName,
+                avatar: sprintf('https://graph.facebook.com/%s/picture?type=large', facebook.id)
             }
             try {
                 user = await this.userRepository.create(body);
@@ -92,10 +95,12 @@ export class UserService {
             }
     
             if (!user) {
-                throw new Error("Cannot create user!");
+                throw "Cannot create user!";
             }
 
             await this.userRepository.insert(user);
+        } else {
+            throw "Cannot create sadfsdf!";
         }
 
         return user;
