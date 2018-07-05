@@ -1,1 +1,8 @@
 [2018-07-05T08:35:58.621] [DEBUG] default - QueryFailedError: null value in column "familyName" violates not-null constraint
+[2018-07-05T13:36:42.799] [DEBUG] default - QueryFailedError: null value in column "language" violates not-null constraint
+[2018-07-05T13:44:25.562] [DEBUG] default - QueryFailedError: null value in column "active" violates not-null constraint
+[2018-07-05T14:06:01.751] [DEBUG] default - QueryFailedError: null value in column "identifies" violates not-null constraint
+[2018-07-05T14:06:23.883] [DEBUG] default - QueryFailedError: null value in column "identifies" violates not-null constraint
+[2018-07-05T14:11:09.508] [DEBUG] default - QueryFailedError: null value in column "identifies" violates not-null constraint
+[2018-07-05T14:15:45.460] [DEBUG] default - QueryFailedError: null value in column "company" violates not-null constraint
+[2018-07-05T14:17:19.849] [DEBUG] default - QueryFailedError: duplicate key value violates unique constraint "UQ_f2578043e491921209f5dadd080"

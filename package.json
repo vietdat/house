@@ -39,7 +39,7 @@
     "typeorm": "0.2.7"
   },
   "scripts": {
-    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "tslint": "tslint --fix -c tslint.json -p tsconfig.json ",
     "start": "npm run tslint && ts-node src/index.ts"
   }
 }
