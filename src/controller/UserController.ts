@@ -6,7 +6,7 @@ import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
 // import * as passport from "passport";
 import { sprintf } from "sprintf-js";
-import { passportConfig } from "../libs/passport";
+import { PassportConfig } from "../libs/passport";
 // import { getLogger, Logger  } from 'log4js';
 
 @ApiPath({
@@ -16,7 +16,7 @@ import { passportConfig } from "../libs/passport";
 @controller("/user")
 export class UserController {
     public static TARGET_NAME: string = "UserController - 1";
-    private passportC = new passportConfig();
+    private passportC = new PassportConfig();
     private userService = new UserService();
 
     @ApiOperationGet({
@@ -50,7 +50,7 @@ export class UserController {
         }
     })
     @httpGet("/byid/:userId")
-    async findById(request: Request, response: Response, next: NextFunction) {
+    public async findById(request: Request, response: Response, next: NextFunction) {
         return this.userService.findOne(request.params.id);
     }
 
@@ -66,11 +66,11 @@ export class UserController {
         }
     })
     @httpPut("/")
-    async createOne(request: Request, response: Response, next: NextFunction) {
+    public async createOne(request: Request, response: Response, next: NextFunction) {
         return this.userService.create(request.body);
     }
 
-    async deleteOne(request: Request, response: Response, next: NextFunction) {
+    public async deleteOne(request: Request, response: Response, next: NextFunction) {
         await this.userService.remove(request.params.id);
     }
 }

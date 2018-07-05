@@ -1,5 +1,5 @@
 {
-  "name": "MyProject",
+  "name": "Project",
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
@@ -21,6 +21,7 @@
     "inversify-express-utils": "^6.1.0",
     "jsonwebtoken": "^8.3.0",
     "jwt-simple": "^0.5.1",
+    "lodash": "^4.17.10",
     "log4js": "^2.10.0",
     "moment": "^2.22.2",
     "passport": "^0.4.0",

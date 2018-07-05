@@ -10,8 +10,8 @@ import { Auth } from "./controller/Auth";
 
 import * as passport from "passport";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
-import { Error } from "../src/libs/error";
-import { passportConfig } from "./libs/passport";
+import { IError } from "../src/libs/error";
+import { PassportConfig } from "./libs/passport";
 import { Log } from "./libs/log";
 
 import * as https from "https";
@@ -19,7 +19,7 @@ import * as fs from "fs";
 
 createConnection().then(async connection => {
     const container = new Container();
-    const passportC = new passportConfig();
+    const passportC = new PassportConfig();
     let log: Log = new Log();
     passportC.init();
     container.bind<interfaces.Controller>(TYPE.Controller)
@@ -50,7 +50,7 @@ createConnection().then(async connection => {
     });
 
     server.setErrorConfig((app: any) => {
-        app.use((err: Error, request: express.Request, response: express.Response, next: express.NextFunction) => {
+        app.use((err: IError, request: express.Request, response: express.Response, next: express.NextFunction) => {
             // console.log(err.err ? err.err : err);
             log.debug(err.err ? err.err : err.toString());
             response.status(err.statusCode ? err.statusCode : 500).send({ success: false, message: err.message ? err.message : 'Something fail' });

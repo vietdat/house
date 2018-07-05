@@ -9,12 +9,12 @@ import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { StatusCode } from "../all/status-code";
 import { encryptionService } from "../libs/encryption";
 import { Message } from "../all/message";
-import { passportConfig } from "../libs/passport";  
+import { PassportConfig } from "../libs/passport";
 
 @controller("/auth")
 export class Auth {
     private userService = new UserService();
-    private passportConf = new passportConfig();
+    private passportConf = new PassportConfig();
 
     public initialize = () => {
         passport.use("jwt", this.getStrategy());
@@ -23,44 +23,33 @@ export class Auth {
 
     public authenticate = (callback) => passport.authenticate("jwt", { session: false, failWithError: true }, callback);
 
-    private genToken = (user: User): Object => {
-        let expires = moment().utc().add({ days: 7 }).unix();
-        let token = jwt.encode({
-            exp: expires,
-            id: user.id
-        }, "Fami@123");
-
-        return {
-            token: "JWT " + token,
-            expires: moment.unix(expires).format(),
-            user: user.id
-        };
-    }
-
     @httpPost("/login")
-    async login(request: Request, response: Response, next: NextFunction) {
+    public async login(request: Request, response: Response, next: NextFunction) {
         try {
-            let user = await this.userService.findOne({ email: request.body.email });
+            const user = await this.userService.findOne({ email: request.body.email });
 
-            if (user === null) throw "User not found";
+            if (user === null) {
+                throw new Error("User not found");
+            }
 
-            let success = await encryptionService.compare(request.body.password, user.password);
-            console.log(success);
-            if (success === false) throw Message.PASSWORD_INCORRECT;
+            const success = await encryptionService.compare(request.body.password, user.password);
+            if (success === false) {
+                throw new Error(Message.PASSWORD_INCORRECT);
+            }
 
             response.status(200).json(this.genToken(user));
         } catch (err) {
-            return next({ statusCode: StatusCode.UNAUTHORIZED, message: Message.UNAUTHORIZED, err: err });
+            return next({ statusCode: StatusCode.UNAUTHORIZED, message: Message.UNAUTHORIZED, err });
         }
     }
 
-    @httpGet("/secret",  passport.authenticate('jwt', { session: false }))
-    async testToken(request: Request, response: Response, next: NextFunction) {
+    @httpGet("/secret", passport.authenticate("jwt", { session: false }))
+    public async testToken(request: Request, response: Response, next: NextFunction) {
         response.json({ message: "Success! You can not see this without a token" });
     }
 
-    @httpGet("/facebook", passport.authenticate('facebook', { failureRedirect: "/login" }))
-    async loginFacebook(request: Request, response: Response, next: NextFunction) {
+    @httpGet("/facebook", passport.authenticate("facebook", { session: false }))
+    public async loginFacebook(request: Request, response: Response, next: NextFunction) {
         response.json({ message: "Success! Login facebook success" });
     }
 
@@ -71,19 +60,32 @@ export class Auth {
             passReqToCallback: true
         };
 
-        return new Strategy(params, (req, payload: any, done) => {
-            this.userService.findOne({ email: payload.email })
-                .then(user => {
-                    if (user === null) {
-                        return done(null, false, { message: "The user in the token was not found" });
-                    }
+        return new Strategy(params, async (req, payload: any, next) => {
+            let user;
+            try {
+                user = await this.userService.findOne({ email: payload.email });
+            } catch (err) {
+                return next(err);
+            }
+            if (user === null) {
+                return next(null, false, { message: "The user in the token was not found" });
+            }
 
-                    return done(null, { id: user.id, email: user.email });
-                })
-                .catch(err => {
-                    return done(err);
-                });
+            return next(null, { id: user.id, email: user.email });
         });
+    }
+    private genToken = (user: User): object => {
+        const expires = moment().utc().add({ days: 7 }).unix();
+        const token = jwt.encode({
+            exp: expires,
+            id: user.id
+        }, "Fami@123");
+
+        return {
+            token: "JWT " + token,
+            expires: moment.unix(expires).format(),
+            user: user.id
+        };
     }
 
 }
