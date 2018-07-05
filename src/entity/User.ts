@@ -18,8 +18,7 @@ export class User {
 
     @Column()
     @ApiModelProperty({
-        description: "",
-        required: true
+        description: ""
     })
     familyName: string;
 

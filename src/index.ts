@@ -19,8 +19,8 @@ createConnection().then(async connection => {
     passportC.init();
     container.bind<interfaces.Controller>(TYPE.Controller)
         .to(UserController).inSingletonScope().whenTargetNamed(UserController.TARGET_NAME);
-    container.bind<interfaces.Controller>(TYPE.Controller)
-        .to(Auth).inSingletonScope().whenTargetNamed("auth");
+    // container.bind<interfaces.Controller>(TYPE.Controller)
+    //     .to(Auth).inSingletonScope().whenTargetNamed("auth");
 
     // create server
     const server = new InversifyExpressServer(container);

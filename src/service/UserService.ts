@@ -71,7 +71,7 @@ export class UserService {
 
     async findOrCreateFacebook(facebook: typeData.IFacebook): Promise<User> {
         console.log(facebook);
-        let instance: User, user: User;
+        let user: User;
 
         try {
             user = await this.userRepository.findOne({email: facebook.email});
@@ -86,16 +86,16 @@ export class UserService {
                 givenName: facebook.displayName
             }
             try {
-                instance = this.userRepository.create(body);
+                user = await this.userRepository.create(body);
             } catch (err) {
                 throw err;
             }
     
-            if (!instance) {
+            if (!user) {
                 throw new Error("Cannot create user!");
             }
 
-            await this.userRepository.insert(instance);
+            await this.userRepository.insert(user);
         }
 
         return user;
