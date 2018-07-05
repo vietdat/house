@@ -6,7 +6,8 @@
     "@types/node": "^8.0.29",
     "@types/passport": "^0.4.5",
     "ts-node": "3.3.0",
-    "typescript": "2.5.2"
+    "tslint": "^5.10.0",
+    "typescript": "^2.5.2"
   },
   "dependencies": {
     "@types/passport-local": "^1.0.33",
@@ -37,6 +38,7 @@
     "typeorm": "0.2.7"
   },
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "start": "npm run tslint && ts-node src/index.ts"
   }
 }

@@ -16,7 +16,7 @@ export class User {
     })
     id: number;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: ""
     })
@@ -30,7 +30,7 @@ export class User {
     givenName: string;
 
     @Column({
-        unique: true
+        unique: true, nullable: true
     })
     @ApiModelProperty({
         description: "",
@@ -39,11 +39,10 @@ export class User {
     phoneNumber: string;
 
     @Column({
-        unique: true
+        unique: true, nullable: true
     })
     @ApiModelProperty({
-        description: "",
-        required: true
+        description: ""
     })
     email: string;
 
@@ -54,9 +53,9 @@ export class User {
     })
     password: string;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
-        description: "",
+        description: ""
     })
     birthDate: string;
 
@@ -160,12 +159,12 @@ export class User {
     })
     createdAt: Date;
 
-    @Column()
+    @Column("simple-array")
     @ApiModelProperty({
         description: "",
         required: true
     })
-    updatedAt: Date;
+    updatedAt: Date[];
 
     @BeforeInsert()
     async hashPassword() {
@@ -194,11 +193,11 @@ export class User {
     @BeforeInsert()
     addTime() {
         this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.updatedAt = [new Date];
     }
 
     @BeforeUpdate()
     updateTime() {
-        this.updatedAt = new Date();
+        this.updatedAt.push(new Date());
     }
 }
