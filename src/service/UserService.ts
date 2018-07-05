@@ -1,9 +1,7 @@
 import { getRepository, Repository } from "typeorm";
 import { User } from "../entity/User";
-
 export class UserService {
     private userRepository: Repository<User> = getRepository(User);
-
     async search() {
         let instances: User[];
 

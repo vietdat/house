@@ -4,9 +4,10 @@ import { controller, httpGet, httpPost } from "inversify-express-utils";
 import { UserService } from "../service/UserService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
-import * as passport from "passport";
+// import * as passport from "passport";
 import { sprintf } from "sprintf-js";
 import { passportConfig } from "../libs/passport";
+// import { getLogger, Logger  } from 'log4js';
 
 @ApiPath({
     path: "/user",
@@ -15,7 +16,6 @@ import { passportConfig } from "../libs/passport";
 @controller("/users")
 export class UserController {
     private passportC = new passportConfig();
-
     public static TARGET_NAME: string = "UserController - 1";
     private userService = new UserService();
 
