@@ -1,11 +1,1 @@
-[2018-07-05T08:51:33.990] [DEBUG] default - Error: User not found!
-[2018-07-05T08:54:28.703] [DEBUG] default - TypeError: Cannot read property 'push' of undefined
-[2018-07-05T08:55:02.569] [DEBUG] default - QueryFailedError: null value in column "email" violates not-null constraint
-[2018-07-05T08:55:35.537] [DEBUG] default - QueryFailedError: null value in column "email" violates not-null constraint
-[2018-07-05T08:56:25.821] [DEBUG] default - QueryFailedError: column "email" of relation "user" does not exist
-[2018-07-05T08:56:45.347] [DEBUG] default - QueryFailedError: relation "user" does not exist
-[2018-07-05T08:56:56.791] [DEBUG] default - QueryFailedError: null value in column "familyName" violates not-null constraint
-[2018-07-05T08:57:25.104] [DEBUG] default - QueryFailedError: null value in column "email" violates not-null constraint
-[2018-07-05T08:58:16.672] [DEBUG] default - QueryFailedError: null value in column "language" violates not-null constraint
-[2018-07-05T08:58:47.474] [DEBUG] default - QueryFailedError: null value in column "email" violates not-null constraint
-[2018-07-05T09:00:17.188] [DEBUG] default - QueryFailedError: null value in column "language" violates not-null constraint
+[2018-07-05T08:35:58.621] [DEBUG] default - QueryFailedError: null value in column "familyName" violates not-null constraint

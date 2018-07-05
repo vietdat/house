@@ -39,7 +39,6 @@ export class passportConfig {
         passport.use(strategy);
 
         passport.serializeUser<any, any>((user, done) => {
-            console.log('as');
             done(undefined, user.id);
         });
 
