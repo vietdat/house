@@ -1,7 +1,7 @@
 export class Environment {
-    url: string;
-    port: number;
-    secret: string;
+    public url: string;
+    public port: number;
+    public secret: string;
 
     constructor(url: string, port: number, secret: string) {
         this.url = url;
@@ -9,15 +9,15 @@ export class Environment {
         this.secret = secret;
     }
 
-    getDbUrl() {
+    public getDbUrl() {
         return this.url;
     }
 
-    getPort() {
+    public getPort() {
         return this.port;
     }
 
-    getJwtSecret() {
+    public getJwtSecret() {
         return this.secret;
     }
 }

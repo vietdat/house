@@ -26,7 +26,7 @@ export class PassportConfig {
 
         const strategy = new jwtStrategy(jwtOptions, async (jwtPayload, next) => {
             const userService = new UserService();
-            // console.log('payload received', jwtPayload);
+            // console.log("payload received", jwtPayload);
             let user;
             try {
                 user = await userService.findOne({ id: jwtPayload.id });
@@ -61,7 +61,7 @@ export class PassportConfig {
                 const userService = new UserService();
                 let user;
                 try {
-                    user = await userService.findOrCreateFacebook(profile)
+                    user = await userService.findOrCreateFacebook(profile);
                 } catch (err) {
                     next(err);
                 }
@@ -74,34 +74,33 @@ export class PassportConfig {
             clientSecret: "cf86E9dNorD96kWtLk6Tjkfr",
             callbackURL: "http://localhost:3000/auth/google/"
         },
-            (accessToken, refreshToken, profile, cb) => {
-                let userService = new UserService();
-                userService.findOrCreateGoogle(profile)
-                    .then(user => {
-                        if (user) {
-                            return cb(null, user);
-                        } else {
-                            return cb('Login facebook fail');
-                        }
-                    });
+            async (accessToken, refreshToken, profile, next) => {
+                const userService = new UserService();
+                let user;
+
+                try {
+                    user = await userService.findOrCreateGoogle(profile);
+                } catch (err) {
+                    next(err);
+                }
+                user ? next(null, user) : next("Login facebook fail");
             }
         ));
 
-        passport.use(new TwitterStrategy({
+        passport.use(new twitterStrategy({
             consumerKey: "o9djcMxFpO83ckKYncOFG1nDh",
             consumerSecret: "ThcE4yRMjRrRLyPmXEPxffld54TZ5H77KKZOX2HSHHhTg6wTzo",
             callbackURL: "http://localhost:3000/auth/twitter/"
         },
-            function (accessToken, refreshToken, profile, cb) {
-                let userService = new UserService();
-                userService.findOrCreateTwitter(profile)
-                    .then(user => {
-                        if (user) {
-                            return cb(null, user);
-                        } else {
-                            return cb('Login facebook fail');
-                        }
-                    });
+            async (accessToken, refreshToken, profile, next) => {
+                const userService = new UserService();
+                let user;
+                try {
+                    user = await userService.findOrCreateTwitter(profile);
+                } catch (err) {
+                    next(err);
+                }
+                user ? next(null, user) : next(new Error("Login facebook fail"));
             }
         ));
     }
@@ -114,12 +113,12 @@ export class PassportConfig {
             return next();
         }
         res.redirect("/login");
-    };
+    }
 
     /**
      * Authorization Required middleware.
      */
-    isAuthorized(req: Request, res: Response, next: NextFunction) {
+    public isAuthorized(req: Request, res: Response, next: NextFunction) {
         const provider = req.path.split("/").slice(-1)[0];
 
         if (_.find(req.user.tokens, { kind: provider })) {
@@ -127,5 +126,5 @@ export class PassportConfig {
         } else {
             res.redirect(`/auth/${provider}`);
         }
-    };
+    }
 }

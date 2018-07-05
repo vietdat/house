@@ -5,7 +5,7 @@ import * as typeData from "../libs/typeData";
 export class UserService {
     private userRepository: Repository<User> = getRepository(User);
 
-    async search(): Promise<User[]> {
+    public async search(): Promise<User[]> {
         let instances: User[];
 
         try {
@@ -21,7 +21,7 @@ export class UserService {
         return instances;
     }
 
-    async findOne(query: Object): Promise<User>  {
+    public async findOne(query: object): Promise<User> {
         let user: User;
 
         try {
@@ -37,7 +37,7 @@ export class UserService {
         return user;
     }
 
-    create(body: Object): Promise<InsertResult> {
+    public create(body: object): Promise<InsertResult> {
         let instance: User;
 
         try {
@@ -53,7 +53,7 @@ export class UserService {
         return this.userRepository.insert(instance);
     }
 
-    async update(user: User): Promise<InsertResult> {
+    public async update(user: User): Promise<InsertResult> {
         let instance: User;
 
         try {
@@ -69,28 +69,28 @@ export class UserService {
         return this.userRepository.insert(instance);
     }
 
-    async findOrCreateFacebook(facebook: typeData.IFacebook): Promise<User> {
+    public async findOrCreateFacebook(facebook: typeData.IFacebook): Promise<User> {
         console.log(facebook);
         let user: User;
 
         try {
-            user = await this.userRepository.findOne({email: facebook.email});
+            user = await this.userRepository.findOne({ email: facebook.email });
         } catch (err) {
             throw err;
         }
 
-        if(!user) {
-            let body = {
-                facebook: facebook,
+        if (!user) {
+            const body = {
+                facebook,
                 email: facebook.email,
                 givenName: facebook.displayName
-            }
+            };
             try {
                 user = await this.userRepository.create(body);
             } catch (err) {
                 throw err;
             }
-    
+
             if (!user) {
                 throw new Error("Cannot create user!");
             }
@@ -101,17 +101,17 @@ export class UserService {
         return user;
     }
 
-    async findOrCreateGoogle(google: typeData.IGoogle) {
+    public async findOrCreateGoogle(google: typeData.IGoogle) {
         console.log(google);
         return google;
     }
 
-    async findOrCreateTwitter(twitter: typeData.ITwitter) {
+    public async findOrCreateTwitter(twitter: typeData.ITwitter) {
         console.log(twitter);
         return twitter;
     }
 
-    remove(userId) {
+    public remove(userId) {
 
         try {
             this.userRepository.remove(userId);
