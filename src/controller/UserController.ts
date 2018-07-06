@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
-import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
+import { Controller, Req, Res, Get, Put } from "routing-controllers";
 import { UserService } from "../service/UserService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
@@ -13,7 +13,7 @@ import { PassportConfig } from "../libs/passport";
     path: "/user",
     name: "user",
 })
-@controller("/user")
+@Controller()
 export class UserController {
     public static TARGET_NAME: string = "UserController - 1";
     private passportC = new PassportConfig();
@@ -29,12 +29,12 @@ export class UserController {
             apiKeyHeader: []
         }
     })
-    @httpGet("/search")
-    public async search(request: Request, response: Response, next: NextFunction) {
+    @Get("/search")
+    public async search(@Req() request: any, @Res() response: any) {
         try {
             return response.json({ success: true, data: await this.userService.search() });
         } catch (err) {
-            return next({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "error"), err });
+            // return next({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "error"), err });
         }
     }
 
@@ -49,7 +49,7 @@ export class UserController {
             200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
         }
     })
-    @httpGet("/byid/:userId")
+    @Get("/byid/:userId")
     public async findById(request: Request, response: Response, next: NextFunction) {
         return this.userService.findOne(request.params.id);
     }
@@ -65,7 +65,7 @@ export class UserController {
             400: { description: "Parameters fail" }
         }
     })
-    @httpPut("/")
+    @Put("/")
     public async createOne(request: Request, response: Response, next: NextFunction) {
         return this.userService.create(request.body);
     }
