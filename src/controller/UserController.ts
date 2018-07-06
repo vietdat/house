@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
-import { Controller, Req, Res, Get, Put, Ctx } from "routing-controllers";
+import { Controller, Req, Res, Get, Put, Post, Delete } from "routing-controllers";
 import { UserService } from "../service/UserService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
 // import * as passport from "passport";
 import { sprintf } from "sprintf-js";
 import { PassportConfig } from "../libs/passport";
-import { next } from "inversify-express-utils";
+import { injectable } from "inversify";
 // import { getLogger, Logger  } from "log4js";
 
 @ApiPath({
@@ -71,7 +71,35 @@ export class UserController {
         return this.userService.create(request.body);
     }
 
-    public async deleteOne(request: Request, response: Response) {
+    @ApiOperationGet({
+        description: "Delete user",
+        summary: "Delete user by id",
+        responses: {
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "User" }
+        },
+        security: {
+            apiKeyHeader: []
+        }
+    })
+
+    @Delete("/:id/delete")
+    public async deleteOne(request: Request, response: Response, next: NextFunction) {
         await this.userService.remove(request.params.id);
+    }
+
+    @ApiOperationGet({
+        description: "Soft delete user",
+        summary: "Soft delete user by id",
+        responses: {
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "User" }
+        },
+        security: {
+            apiKeyHeader: []
+        }
+    })
+
+    @Post("/:id/softdelete")
+    public async softDeleteOne(request: Request, response: Response, next: NextFunction) {
+        await this.userService.update(request.params.id);
     }
 }

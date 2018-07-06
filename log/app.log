@@ -50,7 +50,12 @@
 [2018-07-05T14:11:09.508] [DEBUG] default - QueryFailedError: null value in column "identifies" violates not-null constraint
 [2018-07-05T14:15:45.460] [DEBUG] default - QueryFailedError: null value in column "company" violates not-null constraint
 [2018-07-05T14:17:19.849] [DEBUG] default - QueryFailedError: duplicate key value violates unique constraint "UQ_f2578043e491921209f5dadd080"
+<<<<<<< HEAD
+[2018-07-05T14:42:11.293] [DEBUG] default - QueryFailedError: invalid input syntax for uuid: "ad"
+[2018-07-05T14:42:38.505] [DEBUG] default - Error: User not found!
+=======
 >>>>>>> 84486b1d1d0cf1dabffb2405cd04184a375f4314
+<<<<<<< HEAD
 [2018-07-06T09:39:17.023] [DEBUG] default - NotFoundError
 [2018-07-06T09:42:24.840] [DEBUG] default - NotFoundError
 [2018-07-06T09:44:11.661] [DEBUG] default - NotFoundError
@@ -79,3 +84,6 @@
     at fulfilled (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:4:58)
     at <anonymous>
     at process._tickDomainCallback (internal/process/next_tick.js:228:7)
+=======
+>>>>>>> c0697c3f82dc1af043e7cadecab177fd939c122e
+>>>>>>> f6e365b6506c0547983511fdeea0eaf0cc93fa47
