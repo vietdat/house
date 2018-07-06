@@ -48,7 +48,7 @@ export class Auth {
         response.json({ message: "Success! You can not see this without a token" });
     }
 
-    @httpGet("/facebook", passport.authenticate("facebook", { session: false }))
+    @httpGet("/facebook", passport.authenticate("facebook"))
     public async loginFacebook(request: Request, response: Response, next: NextFunction) {
         response.json({ message: "Success! Login facebook success" });
     }

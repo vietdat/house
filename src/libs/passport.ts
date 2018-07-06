@@ -55,17 +55,15 @@ export class PassportConfig {
         passport.use(new facebookStrategy({
             clientID: "823733734463471",
             clientSecret: "e492d9b28db6f1dc11f76113306f311e",
-            callbackURL: "http://localhost:3000/auth/facebook/"
-        },
-            async (accessToken, refreshToken, profile, next) => {
+            callbackURL: "https://localhost:5000/auth/facebook",
+            profileFields: ["name", "email", "link", "locale", "timezone"],
+            passReqToCallback: true
+        }, (req, accessToken, refreshToken, profile, next) => {
                 const userService = new UserService();
-                let user;
-                try {
-                    user = await userService.findOrCreateFacebook(profile);
-                } catch (err) {
-                    next(err);
-                }
-                user ? next(null, user) : next(new Error("Login facebook fail"));
+                console.log(profile);
+                userService.findOrCreateFacebook(profile).then((user) => {
+                    user ? next(null, user) : next(new Error("Login facebook fail2112"));
+                }).catch((err) => {console.log(err); next(err); });
             }
         ));
 
@@ -74,7 +72,7 @@ export class PassportConfig {
             clientSecret: "cf86E9dNorD96kWtLk6Tjkfr",
             callbackURL: "http://localhost:3000/auth/google/"
         },
-            async (accessToken, refreshToken, profile, next) => {
+            async (req, accessToken, refreshToken, profile, next) => {
                 const userService = new UserService();
                 let user;
 
@@ -92,7 +90,7 @@ export class PassportConfig {
             consumerSecret: "ThcE4yRMjRrRLyPmXEPxffld54TZ5H77KKZOX2HSHHhTg6wTzo",
             callbackURL: "http://localhost:3000/auth/twitter/"
         },
-            async (accessToken, refreshToken, profile, next) => {
+            async (req, accessToken, refreshToken, profile, next) => {
                 const userService = new UserService();
                 let user;
                 try {

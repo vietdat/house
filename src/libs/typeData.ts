@@ -1,7 +1,8 @@
 export interface IFacebook {
     id: string;
     email: string;
-    displayName: string;
+    familyName: string;
+    givenName: string;
 }
 
 export interface IGoogle {

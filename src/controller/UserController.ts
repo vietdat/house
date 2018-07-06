@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
-import { Controller, Get, Post, Put, Delete, Param } from "routing-controllers";
+import { Controller, Req, Res, Get, Put, Post, Delete } from "routing-controllers";
 import { UserService } from "../service/UserService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
@@ -14,8 +14,7 @@ import { injectable } from "inversify";
     path: "/user",
     name: "user",
 })
-@Controller("/user")
-@injectable()
+@Controller()
 export class UserController {
     public static TARGET_NAME: string = "UserController - 1";
     private passportC = new PassportConfig();
@@ -32,11 +31,11 @@ export class UserController {
         }
     })
     @Get("/search")
-    public async search(request: Request, response: Response, next: NextFunction) {
+    public async search(@Req() request: any, @Res() response: any) {
         try {
             return response.json({ success: true, data: await this.userService.search() });
         } catch (err) {
-            return next({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "error"), err });
+            // return next({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "error"), err });
         }
     }
 
@@ -51,10 +50,9 @@ export class UserController {
             200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
         }
     })
-    @Get("/byid/:id")
-    public async findById(@Param("id") id: string) {
-        console.log("id", id);
-        return this.userService.findOne({ id });
+    @Get("/byid/:userId")
+    public async findById(request: Request, response: Response, next: NextFunction) {
+        return this.userService.findOne(request.params.id);
     }
 
     @ApiOperationPost({
@@ -83,6 +81,7 @@ export class UserController {
             apiKeyHeader: []
         }
     })
+
     @Delete("/:id/delete")
     public async deleteOne(request: Request, response: Response, next: NextFunction) {
         await this.userService.remove(request.params.id);
@@ -98,6 +97,7 @@ export class UserController {
             apiKeyHeader: []
         }
     })
+
     @Post("/:id/softdelete")
     public async softDeleteOne(request: Request, response: Response, next: NextFunction) {
         await this.userService.update(request.params.id);

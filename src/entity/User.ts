@@ -151,7 +151,7 @@ export class User {
     })
     public bank: any;
 
-    @Column()
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
         required: true
