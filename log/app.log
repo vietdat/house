@@ -6,3 +6,5 @@
 [2018-07-05T14:11:09.508] [DEBUG] default - QueryFailedError: null value in column "identifies" violates not-null constraint
 [2018-07-05T14:15:45.460] [DEBUG] default - QueryFailedError: null value in column "company" violates not-null constraint
 [2018-07-05T14:17:19.849] [DEBUG] default - QueryFailedError: duplicate key value violates unique constraint "UQ_f2578043e491921209f5dadd080"
+[2018-07-05T14:42:11.293] [DEBUG] default - QueryFailedError: invalid input syntax for uuid: "ad"
+[2018-07-05T14:42:38.505] [DEBUG] default - Error: User not found!

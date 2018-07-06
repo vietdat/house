@@ -1,19 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
-import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
+import { Controller, Get, Post, Put, Delete, Param } from "routing-controllers";
 import { UserService } from "../service/UserService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
 // import * as passport from "passport";
 import { sprintf } from "sprintf-js";
 import { PassportConfig } from "../libs/passport";
+import { injectable } from "inversify";
 // import { getLogger, Logger  } from "log4js";
 
 @ApiPath({
     path: "/user",
     name: "user",
 })
-@controller("/user")
+@Controller("/user")
+@injectable()
 export class UserController {
     public static TARGET_NAME: string = "UserController - 1";
     private passportC = new PassportConfig();
@@ -29,7 +31,7 @@ export class UserController {
             apiKeyHeader: []
         }
     })
-    @httpGet("/search")
+    @Get("/search")
     public async search(request: Request, response: Response, next: NextFunction) {
         try {
             return response.json({ success: true, data: await this.userService.search() });
@@ -49,9 +51,10 @@ export class UserController {
             200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
         }
     })
-    @httpGet("/byid/:userId")
-    public async findById(request: Request, response: Response, next: NextFunction) {
-        return this.userService.findOne(request.params.id);
+    @Get("/byid/:id")
+    public async findById(@Param("id") id: string) {
+        console.log("id", id);
+        return this.userService.findOne({ id });
     }
 
     @ApiOperationPost({
@@ -65,12 +68,38 @@ export class UserController {
             400: { description: "Parameters fail" }
         }
     })
-    @httpPut("/")
+    @Put("/")
     public async createOne(request: Request, response: Response, next: NextFunction) {
         return this.userService.create(request.body);
     }
 
+    @ApiOperationGet({
+        description: "Delete user",
+        summary: "Delete user by id",
+        responses: {
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "User" }
+        },
+        security: {
+            apiKeyHeader: []
+        }
+    })
+    @Delete("/:id/delete")
     public async deleteOne(request: Request, response: Response, next: NextFunction) {
         await this.userService.remove(request.params.id);
+    }
+
+    @ApiOperationGet({
+        description: "Soft delete user",
+        summary: "Soft delete user by id",
+        responses: {
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "User" }
+        },
+        security: {
+            apiKeyHeader: []
+        }
+    })
+    @Post("/:id/softdelete")
+    public async softDeleteOne(request: Request, response: Response, next: NextFunction) {
+        await this.userService.update(request.params.id);
     }
 }

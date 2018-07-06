@@ -37,11 +37,11 @@ export class UserService {
         return user;
     }
 
-    public create(body: object): Promise<InsertResult> {
+    public async create(body: object): Promise<InsertResult> {
         let instance: User;
 
         try {
-            instance = this.userRepository.create(body);
+            instance = await this.userRepository.create(body);
         } catch (err) {
             throw err;
         }
@@ -113,11 +113,27 @@ export class UserService {
     public remove(userId) {
 
         try {
-            this.userRepository.remove(userId);
+            this.userRepository.delete({ id: userId });
         } catch (err) {
             throw err;
         }
 
         return;
+    }
+
+    public async sendOtp(user: User): Promise<InsertResult> {
+        let instance: User;
+
+        try {
+            instance = await this.userRepository.save(user);
+        } catch (err) {
+            throw err;
+        }
+
+        if (!instance) {
+            throw new Error("Cannot create user!");
+        }
+
+        return this.userRepository.insert(instance);
     }
 }
