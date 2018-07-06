@@ -9,7 +9,6 @@ import { UserController } from "./controller/UserController";
 import { Auth } from "./controller/Auth";
 
 import * as passport from "passport";
-import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
 import { IError } from "../src/libs/error";
 import { PassportConfig } from "./libs/passport";
 import { Log } from "./libs/log";
@@ -23,6 +22,7 @@ createConnection().then(async () => {
     const log: Log = new Log();
     passportC.init();
     const app = createExpressServer({
+        defaultErrorHandler: false,
         controllers: [UserController] // we specify controllers we want to use
     });
 
@@ -46,13 +46,10 @@ createConnection().then(async () => {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    // app.setErrorConfig((config: any) => {
-    //     config.use((err: IError, request: express.Request, response: express.Response, next: express.NextFunction) => {
-    //         // console.log(err.err ? err.err : err);
-    //         log.debug(err.err ? err.err : err.toString());
-    //         response.status(err.statusCode ? err.statusCode : 500).send({ success: false, message: err.message ? err.message : "Something fail" });
-    //     });
-    // });
+    app.use((err: IError, request: express.Request, response: express.Response, next: express.NextFunction) => {
+        log.debug(err.err ? err.err : err.toString());
+        response.status(err.statusCode ? err.statusCode : 500).send({ success: false, message: err.message ? err.message : "Something fail" });
+    });
 
     const options = {
         key: fs.readFileSync("../../key-20180704-112014.pem"),

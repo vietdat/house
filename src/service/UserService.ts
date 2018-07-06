@@ -18,8 +18,8 @@ export class UserService {
         if (!instances || !instances.length) {
             return [];
         }
-
-        return instances;
+        throw Error("err");
+        // return instances;
     }
 
     public async findOne(query: object): Promise<User> {

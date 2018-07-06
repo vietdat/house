@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
-import { Controller, Req, Res, Get, Put } from "routing-controllers";
+import { Controller, Req, Res, Get, Put, Ctx } from "routing-controllers";
 import { UserService } from "../service/UserService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
 // import * as passport from "passport";
 import { sprintf } from "sprintf-js";
 import { PassportConfig } from "../libs/passport";
+import { next } from "inversify-express-utils";
 // import { getLogger, Logger  } from "log4js";
 
 @ApiPath({
@@ -34,7 +35,7 @@ export class UserController {
         try {
             return response.json({ success: true, data: await this.userService.search() });
         } catch (err) {
-            // return next({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "error"), err });
+            throw ({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "error"), err });
         }
     }
 
@@ -50,7 +51,7 @@ export class UserController {
         }
     })
     @Get("/byid/:userId")
-    public async findById(request: Request, response: Response, next: NextFunction) {
+    public async findById(request: Request, response: Response) {
         return this.userService.findOne(request.params.id);
     }
 
@@ -66,11 +67,11 @@ export class UserController {
         }
     })
     @Put("/")
-    public async createOne(request: Request, response: Response, next: NextFunction) {
+    public async createOne(request: Request, response: Response) {
         return this.userService.create(request.body);
     }
 
-    public async deleteOne(request: Request, response: Response, next: NextFunction) {
+    public async deleteOne(request: Request, response: Response) {
         await this.userService.remove(request.params.id);
     }
 }

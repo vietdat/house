@@ -51,3 +51,31 @@
 [2018-07-05T14:15:45.460] [DEBUG] default - QueryFailedError: null value in column "company" violates not-null constraint
 [2018-07-05T14:17:19.849] [DEBUG] default - QueryFailedError: duplicate key value violates unique constraint "UQ_f2578043e491921209f5dadd080"
 >>>>>>> 84486b1d1d0cf1dabffb2405cd04184a375f4314
+[2018-07-06T09:39:17.023] [DEBUG] default - NotFoundError
+[2018-07-06T09:42:24.840] [DEBUG] default - NotFoundError
+[2018-07-06T09:44:11.661] [DEBUG] default - NotFoundError
+[2018-07-06T09:45:02.606] [DEBUG] default - NotFoundError
+[2018-07-06T09:48:18.631] [DEBUG] default - NotFoundError
+[2018-07-06T09:52:14.409] [DEBUG] default - NotFoundError
+[2018-07-06T10:02:59.325] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:12.878] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:13.442] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:13.645] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:13.825] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:13.994] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:14.162] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:14.338] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:14.514] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:14.673] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:14.849] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:15.019] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:15.177] [DEBUG] default - NotFoundError
+[2018-07-06T10:03:15.339] [DEBUG] default - NotFoundError
+[2018-07-06T10:04:05.507] [DEBUG] default - TypeError: next is not a function
+[2018-07-06T10:30:02.092] [DEBUG] default - Error: err
+    at UserService.<anonymous> (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:21:15)
+    at step (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:32:23)
+    at Object.next (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:13:53)
+    at fulfilled (C:\Users\vietd\Desktop\house - v3\house\src\service\UserService.ts:4:58)
+    at <anonymous>
+    at process._tickDomainCallback (internal/process/next_tick.js:228:7)
