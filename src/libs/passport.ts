@@ -39,12 +39,15 @@ export class PassportConfig {
         passport.use(strategy);
 
         passport.serializeUser<any, any>((user, next) => {
+            console.log("=============================");
+            console.log(user);
             next(undefined, user.id);
         });
 
         passport.deserializeUser(async (id, next) => {
             let user;
             try {
+                console.log(id);
                 user = await this.userService.findOne(id);
             } catch (err) {
                 next(null, false);
@@ -60,8 +63,8 @@ export class PassportConfig {
             passReqToCallback: true
         }, (req, accessToken, refreshToken, profile, next) => {
                 const userService = new UserService();
-                console.log(profile);
                 userService.findOrCreateFacebook(profile).then((user) => {
+                    req.user = user;
                     user ? next(null, user) : next(new Error("Login facebook fail2112"));
                 }).catch((err) => {console.log(err); next(err); });
             }
@@ -81,6 +84,7 @@ export class PassportConfig {
                 } catch (err) {
                     next(err);
                 }
+                req.user = user;
                 user ? next(null, user) : next("Login facebook fail");
             }
         ));
@@ -98,6 +102,7 @@ export class PassportConfig {
                 } catch (err) {
                     next(err);
                 }
+                req.user = user;
                 user ? next(null, user) : next(new Error("Login facebook fail"));
             }
         ));
