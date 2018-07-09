@@ -49,8 +49,30 @@ export class Auth {
     }
 
     @httpGet("/facebook", passport.authenticate("facebook"))
-    public async loginFacebook(request: Request, response: Response, next: NextFunction) {
-        response.json({ message: "Success! Login facebook success" });
+    public async loginFacebook(request, response: Response, next: NextFunction) {
+        try {
+            response.status(200).json(this.genToken(request.user));
+        } catch (err) {
+            return next({ statusCode: StatusCode.UNAUTHORIZED, message: Message.UNAUTHORIZED, err });
+        }
+    }
+
+    @httpGet("/google", passport.authenticate("google"))
+    public async loginGoogle(request, response: Response, next: NextFunction) {
+        try {
+            response.status(200).json(this.genToken(request.user));
+        } catch (err) {
+            return next({ statusCode: StatusCode.UNAUTHORIZED, message: Message.UNAUTHORIZED, err });
+        }
+    }
+
+    @httpGet("/twitter", passport.authenticate("twitter"))
+    public async loginTwitter(request, response: Response, next: NextFunction) {
+        try {
+            response.status(200).json(this.genToken(request.user));
+        } catch (err) {
+            return next({ statusCode: StatusCode.UNAUTHORIZED, message: Message.UNAUTHORIZED, err });
+        }
     }
 
     private getStrategy = (): Strategy => {
@@ -87,5 +109,4 @@ export class Auth {
             user: user.id
         };
     }
-
 }

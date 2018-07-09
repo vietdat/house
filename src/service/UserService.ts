@@ -71,7 +71,7 @@ export class UserService {
 
     public async findOrCreateFacebook(facebook): Promise<User> {
         let user: User;
-        const query = sprintf("SELECT * FROM public.\"user\" WHERE CAST(facebook->'id' AS STRING)=%s", facebook.id);
+        const query = sprintf("SELECT * FROM public.\"user\" WHERE facebook->>'id'='%s'", facebook.id);
         try {
             user = await this.userRepository.query(query);
         } catch (err) {
@@ -97,17 +97,69 @@ export class UserService {
 
             await this.userRepository.insert(user);
         }
+        return user[0];
+    }
+
+    public async findOrCreateGoogle(google) {
+        let user: User;
+        const query = sprintf("SELECT * FROM public.\"user\" WHERE facebook->>'id'='%s'", google.id);
+        try {
+            user = await this.userRepository.query(query);
+        } catch (err) {
+            throw err;
+        }
+
+        if (!user) {
+            const body = {
+                facebook: {
+                    id: google.id,
+                    email: google.email
+                },
+                email: google.email,
+                givenName: google.name.givenName,
+                familyName: google.name.familyName,
+                password: "fasjkdfbgu2w121"
+            };
+            try {
+                user = await this.userRepository.create(body);
+            } catch (err) {
+                throw err;
+            }
+
+            await this.userRepository.insert(user);
+        }
         return user;
     }
 
-    public async findOrCreateGoogle(google: typeData.IGoogle) {
-        console.log(google);
-        return google;
-    }
+    public async findOrCreateTwitter(twitter) {
+        let user: User;
+        const query = sprintf("SELECT * FROM public.\"user\" WHERE facebook->>'id'='%s'", twitter.id);
+        try {
+            user = await this.userRepository.query(query);
+        } catch (err) {
+            throw err;
+        }
 
-    public async findOrCreateTwitter(twitter: typeData.ITwitter) {
-        console.log(twitter);
-        return twitter;
+        if (!user) {
+            const body = {
+                facebook: {
+                    id: twitter.id,
+                    email: twitter.email
+                },
+                email: twitter.email,
+                givenName: twitter.name.givenName,
+                familyName: twitter.name.familyName,
+                password: "fasjkdfbgu2w121"
+            };
+            try {
+                user = await this.userRepository.create(body);
+            } catch (err) {
+                throw err;
+            }
+
+            await this.userRepository.insert(user);
+        }
+        return user;
     }
 
     public remove(userId) {
