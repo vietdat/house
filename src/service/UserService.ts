@@ -1,7 +1,8 @@
-import { getRepository, Repository, InsertResult, TreeChildren } from "typeorm";
+import { getRepository, Repository, InsertResult } from "typeorm";
 import { User } from "../entity/User";
 import { sprintf } from "sprintf-js";
-import * as typeData from "../libs/typeData";
+import { StatusCode } from "../all/status-code";
+import { Message } from "../all/message";
 
 export class UserService {
     private userRepository: Repository<User> = getRepository(User);
@@ -12,14 +13,13 @@ export class UserService {
         try {
             instances = await this.userRepository.find();
         } catch (err) {
-            throw err;
+            throw ({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "user"), err });
         }
 
         if (!instances || !instances.length) {
             return [];
         }
-        throw Error("err");
-        // return instances;
+        return instances;
     }
 
     public async findOne(query: object): Promise<User> {
@@ -28,11 +28,11 @@ export class UserService {
         try {
             user = await this.userRepository.findOne(query);
         } catch (err) {
-            throw err;
+            throw ({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.CANNOT_FIND, "user"), err });
         }
 
         if (!user) {
-            throw new Error("User not found!");
+            throw ({ statusCode: StatusCode.NOT_FOUND, message: sprintf(Message.NOT_FOUND, "user") });
         }
 
         return user;
@@ -48,25 +48,25 @@ export class UserService {
         }
 
         if (!instance) {
-            throw new Error("Cannot create user!");
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_CREATE, "user") });
         }
         return this.userRepository.insert(instance);
     }
 
-    public async update(user: User): Promise<InsertResult> {
-        let instance: User;
+    public async update(id, user: object): Promise<object> {
+        let instance: object;
 
         try {
-            instance = await this.userRepository.save(user);
+            instance = await this.userRepository.update(id, user);
         } catch (err) {
             throw err;
         }
 
         if (!instance) {
-            throw new Error("Cannot create user!");
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "user") });
         }
 
-        return this.userRepository.insert(instance);
+        return instance;
     }
 
     public async findOrCreateFacebook(facebook): Promise<User> {
@@ -92,12 +92,15 @@ export class UserService {
             try {
                 user = await this.userRepository.create(body);
             } catch (err) {
-                throw err;
+                throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_CREATE, "user"), err });
             }
 
             await this.userRepository.insert(user);
+        } else {
+            user = user[0];
         }
-        return user[0];
+
+        return user;
     }
 
     public async findOrCreateGoogle(google) {
@@ -123,11 +126,14 @@ export class UserService {
             try {
                 user = await this.userRepository.create(body);
             } catch (err) {
-                throw err;
+                throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_CREATE, "user"), err });
             }
 
             await this.userRepository.insert(user);
+        } else {
+            user = user[0];
         }
+
         return user;
     }
 
@@ -137,7 +143,7 @@ export class UserService {
         try {
             user = await this.userRepository.query(query);
         } catch (err) {
-            throw err;
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_CREATE, "user"), err });
         }
 
         if (!user) {
@@ -154,38 +160,23 @@ export class UserService {
             try {
                 user = await this.userRepository.create(body);
             } catch (err) {
-                throw err;
+                throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_CREATE, "user"), err });
             }
 
             await this.userRepository.insert(user);
+        } else {
+            user = user[0];
         }
         return user;
     }
 
-    public remove(userId) {
-
+    public async remove(id) {
         try {
-            this.userRepository.delete({ id: userId });
+            await this.userRepository.delete({ id });
         } catch (err) {
-            throw err;
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_DELETE, "user"), err });
         }
 
         return;
-    }
-
-    public async sendOtp(user: User): Promise<InsertResult> {
-        let instance: User;
-
-        try {
-            instance = await this.userRepository.save(user);
-        } catch (err) {
-            throw err;
-        }
-
-        if (!instance) {
-            throw new Error("Cannot create user!");
-        }
-
-        return this.userRepository.insert(instance);
     }
 }

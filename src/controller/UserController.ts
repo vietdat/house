@@ -12,7 +12,7 @@ import { PassportConfig } from "../libs/passport";
     path: "/user",
     name: "user"
 })
-@controller("/users")
+@controller("/user")
 export class UserController {
     private passportC = new PassportConfig();
 
@@ -30,7 +30,7 @@ export class UserController {
             apiKeyHeader: []
         }
     })
-    @httpGet("/")
+    @httpGet("/search")
     public async all(request: Request, response: Response, next: NextFunction) {
         try {
             return response.json({success: true, data: this.userService.search()});
