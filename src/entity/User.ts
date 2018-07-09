@@ -6,7 +6,7 @@ import * as typeData from "../libs/typeData";
 @Entity("user")
 @ApiModel({
     description: "User table",
-    name: "User"
+    name: "user"
 })
 export class User {
     @PrimaryGeneratedColumn("uuid")
@@ -103,15 +103,13 @@ export class User {
 
     @Column({ nullable: true })
     @ApiModelProperty({
-        description: "",
-        required: true
+        description: ""
     })
     public postCode: string;
 
     @Column({ nullable: true })
     @ApiModelProperty({
-        description: "",
-        required: true
+        description: ""
     })
     public introduce: string;
 
@@ -153,15 +151,13 @@ export class User {
 
     @Column({ nullable: true })
     @ApiModelProperty({
-        description: "",
-        required: true
+        description: ""
     })
     public createdAt: Date;
 
     @Column("simple-array")
     @ApiModelProperty({
-        description: "",
-        required: true
+        description: ""
     })
     public updatedAt: Date[];
 

@@ -22,8 +22,8 @@ createConnection().then(async () => {
     const passportC = new PassportConfig();
     const log: Log = new Log();
     passportC.init();
-    // container.bind<interfaces.Controller>(TYPE.Controller)
-    //     .to(UserController).inSingletonScope().whenTargetNamed(UserController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+        .to(UserController).inSingletonScope().whenTargetNamed(UserController.TARGET_NAME);
     container.bind<interfaces.Controller>(TYPE.Controller)
         .to(Auth).inSingletonScope().whenTargetNamed("auth");
     // create server
