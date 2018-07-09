@@ -65,7 +65,7 @@ createConnection().then(async () => {
         requestCert: false,
         rejectUnauthorized: false
     };
-    https.createServer(options, app).listen(5000);
-    // app.listen(5000);
+    // https.createServer(options, app).listen(5000);
+    app.listen(5000);
     console.log("Server has started on port 5000.");
 }).catch((error) => console.log(error));
