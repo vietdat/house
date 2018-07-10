@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, BaseEntity } from "typeorm";
 import { ApiModel, ApiModelProperty } from "swagger-express-ts";
 import { encryptionService } from "../libs/encryption";
 import * as typeData from "../libs/typeData";
@@ -8,7 +8,7 @@ import * as typeData from "../libs/typeData";
     description: "User table",
     name: "user"
 })
-export class User {
+export class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     @ApiModelProperty({
         description: "Id of version",
@@ -45,6 +45,12 @@ export class User {
         description: ""
     })
     public email: string;
+
+    @Column({ nullable: true })
+    @ApiModelProperty({
+        description: ""
+    })
+    public otpToken: string;
 
     @Column()
     @ApiModelProperty({
@@ -155,11 +161,26 @@ export class User {
     })
     public createdAt: Date;
 
-    @Column("simple-array")
+    @Column({ type: "simple-array" })
     @ApiModelProperty({
         description: ""
     })
     public updatedAt: Date[];
+
+    @BeforeUpdate()
+    public async updatePassword() {
+        if (this.password) {
+            return encryptionService.genSalt().then((salt: string) => {
+                return encryptionService
+                    .hash(this.password, salt)
+                    .then(
+                        (hash: string) => this.password = hash
+                    );
+            });
+        } else {
+            console.log("test");
+        }
+    }
 
     @BeforeInsert()
     private async hashPassword() {
@@ -170,19 +191,6 @@ export class User {
                     (hash: string) => this.password = hash
                 );
         });
-    }
-
-    @BeforeUpdate()
-    private async updatePassword() {
-        if (this.password) {
-            return encryptionService.genSalt().then((salt: string) => {
-                return encryptionService
-                    .hash(this.password, salt)
-                    .then(
-                        (hash: string) => this.password = hash
-                    );
-            });
-        }
     }
 
     @BeforeInsert()

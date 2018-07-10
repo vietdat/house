@@ -1,21 +1,8 @@
-import { bcrypt } from "bcrypt-nodejs";
+import { injectable } from "inversify";
+import * as request from "request-promise";
 
+@injectable()
 export class Utils {
-    public comparePassword = (plain: string, hash: string): boolean => {
-        let compare = true;
-        if (plain && hash) {
-            try {
-                compare = bcrypt.compareSync(plain, hash);
-            } catch (err) {
-                throw new Error("Can not unhash password");
-            }
-        }
-        if (!compare) {
-            throw Error("Password mismatch");
-        }
-        return compare;
-    }
-
     public createError = (statusCode: string, message: string, err: string): object => {
         return {
             statusCode,
@@ -24,5 +11,51 @@ export class Utils {
         };
     }
 
-    // public hashPassword = (plain) => hashPassword(plain);
+    public generateOTPToken = () => {
+        const min = 100000;
+        const max = 999999;
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    public postAPI = async (api, body, token) => {
+        let result;
+        try {
+            result = await request({
+                headers: {
+                    authorization: token
+                },
+                uri: api,
+                method: "POST",
+                json: body
+            });
+        } catch (err) {
+            throw err;
+        }
+        if (result.error) {
+            throw result.error;
+        }
+
+        return result.data;
+    }
+
+    public putAPI = async (api, body, token) => {
+        let result;
+        try {
+            result = await request({
+                headers: {
+                    authorization: token
+                },
+                uri: api,
+                method: "PUT",
+                json: body
+            });
+        } catch (err) {
+            throw err;
+        }
+        if (result.error) {
+            throw result.error;
+        }
+
+        return result.data;
+    }
 }

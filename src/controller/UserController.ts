@@ -14,10 +14,8 @@ import { PassportConfig } from "../libs/passport";
 })
 @controller("/api/user")
 export class UserController {
-    private passportC = new PassportConfig();
-
-    // tslint:disable-next-line:member-ordering
     public static TARGET_NAME: string = "UserController - 1";
+
     private userService = new UserService();
 
     @ApiOperationPut({
@@ -37,6 +35,42 @@ export class UserController {
         return this.userService.create(request.body);
     }
 
+    @ApiOperationPost({
+        description: "Check otp token user",
+        summary: "Check otp token user",
+        path: "/otpToken/{token}",
+        parameters: {
+            path: { token: {description: "Token"} }
+        },
+        responses: {
+            200: {description: "Success"},
+            400: { description: "Something fail" }
+        }
+    })
+    @httpPost("/otpToken/:otpToken")
+    public async checkOtpToken(request: Request, response: Response, next: NextFunction) {
+        await this.userService.checkOtpToken(request.body.phoneNumber, request.params.otpToken);
+        return response.json({ success: true });
+    }
+
+    @ApiOperationPost({
+        description: "Resend Otp token",
+        summary: "Resend Otp token",
+        path: "/resend/token",
+        parameters: {
+            path: { token: {description: "Token"} }
+        },
+        responses: {
+            200: {description: "Success"},
+            400: { description: "Something fail" }
+        }
+    })
+    @httpPost("/resend/token")
+    public async resendOtpToken(request: Request, response: Response, next: NextFunction) {
+        await this.userService.resendOtp(request.body.phoneNumber);
+        return response.json({ success: true });
+    }
+
     @ApiOperationGet({
         description: "Get users objects list",
         summary: "Get users list",
@@ -47,13 +81,9 @@ export class UserController {
             apiKeyHeader: []
         }
     })
-    @httpGet("/search")
+    @httpGet("/search", passport.authenticate("jwt", { session: false }))
     public async all(request: Request, response: Response, next: NextFunction) {
-        try {
-            return response.json({ success: true, data: this.userService.search() });
-        } catch (err) {
-            return next({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "sadf"), err });
-        }
+        return response.json({ success: true, data: await this.userService.search(request.query) });
     }
 
     @ApiOperationGet({

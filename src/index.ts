@@ -6,11 +6,11 @@ import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
 
 import { UserController } from "./controller/UserController";
-import { Auth } from "./controller/Auth";
+import { Auth } from "./controller/AuthController";
 
 import * as passport from "passport";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
-import { IError } from "../src/libs/error";
+import { IError } from "./libs/error";
 import { PassportConfig } from "./libs/passport";
 import { Log } from "./libs/log";
 
@@ -50,7 +50,7 @@ createConnection().then(async () => {
     // tslint:disable-next-line:no-shadowed-variable
     server.setErrorConfig((app: any) => {
         app.use((err: IError, request: express.Request, response: express.Response, next: express.NextFunction) => {
-            // console.log(err.err ? err.err : err);
+            console.log(err.err ? err.err : err);
             log.debug(err.err ? err.err : err.toString());
             response.status(err.statusCode ? err.statusCode : 500).send({ success: false, message: err.message ? err.message : "Something fail" });
         });
