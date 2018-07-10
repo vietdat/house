@@ -5,12 +5,11 @@ import * as bodyParser from "body-parser";
 import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
 
-import { UserController } from "./controller/UserController";
-import { Auth } from "./controller/Auth";
+import { SmsController } from "./controller/SmsController";
 
 import * as passport from "passport";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
-import { IError } from "../src/libs/error";
+import { IError } from "./libs/error";
 import { PassportConfig } from "./libs/passport";
 import { Log } from "./libs/log";
 
@@ -23,9 +22,7 @@ createConnection().then(async () => {
     const log: Log = new Log();
     passportC.init();
     container.bind<interfaces.Controller>(TYPE.Controller)
-        .to(UserController).inSingletonScope().whenTargetNamed(UserController.TARGET_NAME);
-    container.bind<interfaces.Controller>(TYPE.Controller)
-        .to(Auth).inSingletonScope().whenTargetNamed("auth");
+        .to(SmsController).inSingletonScope().whenTargetNamed(SmsController.TARGET_NAME);
     // create server
     const server = new InversifyExpressServer(container);
     // tslint:disable-next-line:no-shadowed-variable
@@ -50,7 +47,7 @@ createConnection().then(async () => {
     // tslint:disable-next-line:no-shadowed-variable
     server.setErrorConfig((app: any) => {
         app.use((err: IError, request: express.Request, response: express.Response, next: express.NextFunction) => {
-            // console.log(err.err ? err.err : err);
+            console.log(err.err ? err.err : err);
             log.debug(err.err ? err.err : err.toString());
             response.status(err.statusCode ? err.statusCode : 500).send({ success: false, message: err.message ? err.message : "Something fail" });
         });
@@ -59,13 +56,13 @@ createConnection().then(async () => {
     console.log(passport.initialize());
 
     // start express server
-    const options = {
-        key: fs.readFileSync("../../key-20180704-112014.pem"),
-        cert: fs.readFileSync("../../cert-20180704-112014.crt"),
-        requestCert: false,
-        rejectUnauthorized: false
-    };
-    // https.createServer(options, app).listen(5000);
-    app.listen(5000);
-    console.log("Server has started on port 5000.");
+    // const options = {
+    //     key: fs.readFileSync("../../key-20180704-112014.pem"),
+    //     cert: fs.readFileSync("../../cert-20180704-112014.crt"),
+    //     requestCert: false,
+    //     rejectUnauthorized: false
+    // };
+    // https.createServer(options, app).listen(5003);
+    app.listen(5003);
+    console.log("Server has started on port 5003.");
 }).catch((error) => console.log(error));
