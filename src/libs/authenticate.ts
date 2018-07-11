@@ -2,7 +2,7 @@
 // import * as passport from "passport";
 // import * as moment from "moment";
 // import { Strategy, ExtractJwt } from "passport-jwt";
-// import { UserService } from "../service/UserService";
+// import { ProjectService } from "../service/ProjectService";
 // import { User } from "../entity/User";
 
 // class Auth {

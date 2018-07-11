@@ -16,11 +16,18 @@ export class Utils {
         return compare;
     }
 
-    public createError = (statusCode: string, message: string, err: string): object => {
+    public createError = (statusCode: number, message: string, err?: string): object => {
         return {
             statusCode,
             message,
             err
+        };
+    }
+
+    public createSuccessResponse = (dataReturn: object): any => {
+        return {
+            success: true,
+            data: dataReturn
         };
     }
 

@@ -3,153 +3,164 @@ import { ApiModel, ApiModelProperty } from "swagger-express-ts";
 import { encryptionService } from "../libs/encryption";
 import * as typeData from "../libs/typeData";
 
-@Entity("user")
+@Entity("project")
 @ApiModel({
-    description: "User table",
-    name: "User"
+    description: "Project table",
+    name: "Project"
 })
-export class User {
+export class Project {
     @PrimaryGeneratedColumn("uuid")
     @ApiModelProperty({
         description: "Id of version",
         required: true
     })
-    public id: number;
+    public id: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: "json" })
     @ApiModelProperty({
         description: ""
     })
-    public familyName: string;
+    public address: JSON;
+
+    @Column({ nullable: true, type: "json" })
+    @ApiModelProperty({
+        description: "",
+        required: true
+    })
+    public properties: JSON;
+
+    @Column({
+        nullable: true
+    })
+    @ApiModelProperty({
+        description: ""
+    })
+    public postCode: string;
+
+    @Column({
+        nullable: true
+    })
+    @ApiModelProperty({
+        description: ""
+    })
+    public price: number;
 
     @Column()
     @ApiModelProperty({
         description: "",
         required: true
     })
-    public givenName: string;
-
-    @Column({
-        unique: true, nullable: true
-    })
-    @ApiModelProperty({
-        description: "",
-        required: true
-    })
-    public phoneNumber: string;
-
-    @Column({
-        unique: true, nullable: true
-    })
-    @ApiModelProperty({
-        description: ""
-    })
-    public email: string;
-
-    @Column()
-    @ApiModelProperty({
-        description: "",
-        required: true
-    })
-    public password: string;
+    public commission: number;
 
     @Column({ nullable: true })
     @ApiModelProperty({
         description: ""
     })
-    public birthDate: string;
+    public promotion: number;
 
     @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
-    public gender: string;
+    public introduce: string;
 
     @Column({ nullable: true })
     @ApiModelProperty({
         description: ""
     })
-    public language: string;
+    public bedroom: number;
 
     @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
-    public referralCode: string;
+    public bathroom: number;
 
     @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
     })
-    public reference: string;
+    public direction: string;
 
     @Column({ type: Boolean, default: true })
     @ApiModelProperty({
         description: "",
+    })
+    public isOwner: boolean;
+
+    @Column({ nullable: true })
+    @ApiModelProperty({
+        description: "",
+    })
+    public ownerId: string;
+
+    @Column({ nullable: true })
+    @ApiModelProperty({
+        description: ""
     })
     public active: boolean;
 
     @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
+        required: true
     })
-    public avatar: string;
-
-    @Column({ type: "json", nullable: true })
-    @ApiModelProperty({
-        description: "",
-    })
-    public address: any;
+    public place: string;
 
     @Column({ nullable: true })
     @ApiModelProperty({
         description: "",
         required: true
     })
-    public postCode: string;
-
-    @Column({ nullable: true })
-    @ApiModelProperty({
-        description: "",
-        required: true
-    })
-    public introduce: string;
-
-    @Column({ type: "simple-array", nullable: true })
-    @ApiModelProperty({
-        description: ""
-    })
-    public identifies: string[];
-
-    @Column({ type: "json", nullable: true })
-    @ApiModelProperty({
-        description: ""
-    })
-    public facebook: typeData.IFacebook;
-
-    @Column({ type: "json", nullable: true })
-    @ApiModelProperty({
-        description: ""
-    })
-    public twitter: typeData.ITwitter;
-
-    @Column({ type: "json", nullable: true })
-    @ApiModelProperty({
-        description: ""
-    })
-    public google: typeData.IGoogle;
+    public from: Date;
 
     @Column({ nullable: true })
     @ApiModelProperty({
         description: ""
     })
-    public company: string;
+    public to: Date;
 
-    @Column({ type: "json", nullable: true })
+    @Column({ nullable: true })
     @ApiModelProperty({
         description: ""
     })
-    public bank: any;
+    public status: Status;
+
+    @Column({ nullable: true })
+    @ApiModelProperty({
+        description: ""
+    })
+    public totalProperty: number;
+
+    @Column({ nullable: true, type: "simple-json" })
+    @ApiModelProperty({
+        description: ""
+    })
+    public videos: [JSON];
+
+    @Column({ nullable: true, type: "simple-json" })
+    @ApiModelProperty({
+        description: ""
+    })
+    public utilityImages: [JSON];
+
+    @Column({ nullable: true, type: "simple-json" })
+    @ApiModelProperty({
+        description: ""
+    })
+    public utilityNames: [JSON];
+
+    @Column({ nullable: true, type: "simple-json" })
+    @ApiModelProperty({
+        description: ""
+    })
+    public documents: [JSON];
+
+    @Column({ nullable: true, type: "simple-json" })
+    @ApiModelProperty({
+        description: ""
+    })
+    public designImages: [JSON];
 
     @Column({ nullable: true })
     @ApiModelProperty({
@@ -166,30 +177,6 @@ export class User {
     public updatedAt: Date[];
 
     @BeforeInsert()
-    private async hashPassword() {
-        return encryptionService.genSalt().then((salt: string) => {
-            return encryptionService
-                .hash(this.password, salt)
-                .then(
-                    (hash: string) => this.password = hash
-                );
-        });
-    }
-
-    @BeforeUpdate()
-    private async updatePassword() {
-        if (this.password) {
-            return encryptionService.genSalt().then((salt: string) => {
-                return encryptionService
-                    .hash(this.password, salt)
-                    .then(
-                        (hash: string) => this.password = hash
-                    );
-            });
-        }
-    }
-
-    @BeforeInsert()
     private addTime() {
         this.createdAt = new Date();
         this.updatedAt = [new Date()];
@@ -199,4 +186,13 @@ export class User {
     private updateTime() {
         this.updatedAt.push(new Date());
     }
+}
+
+enum Status {
+    New = "new",
+    Waitting = "waitting",
+    Notapproved = "notapproved",
+    Approved = "approved",
+    Cancel = "cancel",
+    Expired = "expired"
 }

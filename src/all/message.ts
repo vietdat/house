@@ -7,5 +7,7 @@ export class Message {
     public static readonly CANNOT_CREATE = "Cannot create %s";
     public static readonly CANNOT_UPDATE = "Cannot update %s";
     public static readonly CANNOT_DELETE = "Cannot delete %s";
+    public static readonly CANNOT_SOFT_DELETE = "Cannot soft delete %s";
+    public static readonly CANNOT_ACTIVE = "Cannot active %s";
 
 }
