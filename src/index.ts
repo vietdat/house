@@ -44,7 +44,6 @@ createConnection().then(async () => {
         });
     });
     const app = server.build();
-    console.log(passport.initialize());
 
     app.listen(5003);
     console.log("Server has started on port 5003.");
