@@ -114,17 +114,21 @@ export class UserController {
         return response.json({ success: true, data: await this.userService.update(request.params.userId, request.body)});
     }
 
-    @ApiOperationPost({
-        description: "Post user object",
-        summary: "Post user version",
+    @ApiOperationGet({
+        description: "Get wallet of user",
+        summary: "Get wallet of user",
+        path: "/wallet",
         parameters: {
-            body: { description: "New user", required: true, model: "User" }
+            path: { id: { description: "Success" } }
         },
         responses: {
-            200: { description: "Success" },
-            400: { description: "Parameters fail" }
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
         }
     })
+    @httpGet("/wallet", passport.authenticate("jwt", { session: false }))
+    public async getWallet(request: Request, response: Response, next: NextFunction) {
+        return response.json({ success: true, data: await this.userService.getWallet(request.user.walletId)});
+    }
 
     public async remove(request: Request, response: Response, next: NextFunction) {
         await this.userService.remove(request.params.id);

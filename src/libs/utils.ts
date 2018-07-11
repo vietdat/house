@@ -83,4 +83,25 @@ export class Utils {
 
         return result.data;
     }
+
+    public getAPI = async (api, token) => {
+        let result;
+        try {
+            result = await request({
+                headers: {
+                    authorization: token
+                },
+                uri: api,
+                method: "GET",
+                json: true
+            });
+        } catch (err) {
+            throw err;
+        }
+        if (result.error) {
+            throw result.error;
+        }
+
+        return result.data;
+    }
 }

@@ -119,6 +119,12 @@ export class User extends BaseEntity {
     })
     public introduce: string;
 
+    @Column({ nullable: true })
+    @ApiModelProperty({
+        description: ""
+    })
+    public walletId: string;
+
     @Column({ type: "simple-array", nullable: true })
     @ApiModelProperty({
         description: ""

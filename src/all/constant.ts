@@ -6,4 +6,7 @@ export class Constant {
 
     // Url
     public static readonly sendSmsApi = "http://localhost:5003/api/sms";
+    public static readonly createApi = "http://localhost:5004/api/%s";
+    public static readonly findByIdApi = "http://localhost:5004/api/%s/byid/%s";
+
 }

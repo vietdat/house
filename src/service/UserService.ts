@@ -85,10 +85,13 @@ export class UserService {
     }
 
     public async create(body): Promise<object> {
-        let instance: object;
+        let instance;
+        let wallet;
+
         body.active = false;
         body.otpToken = this._utils.generateOTPToken();
         body.referralCode = this._utils.generateOTPToken();
+
         const content = "Opt token cua ban la: " + body.otpToken;
 
         try {
@@ -100,6 +103,10 @@ export class UserService {
         if (!instance) {
             throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_CREATE, "user") });
         }
+
+        // create wallet
+        wallet = await this._utils.putAPI(sprintf(Constant.createApi, "wallet"), { phoneNumber: body.phoneNumber, content }, await this._authenticate.createInternalToken());
+        instance.walletId = wallet.identifiers[0].id;
 
         // Send otp code
         this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: body.phoneNumber, content }, await this._authenticate.createInternalToken());
@@ -232,5 +239,21 @@ export class UserService {
         }
 
         return;
+    }
+
+    public async getWallet(walletId) {
+        let wallet: object;
+
+        try {
+            wallet = await this._utils.getAPI(sprintf(Constant.findByIdApi, "wallet", walletId), await this._authenticate.createInternalToken());
+        } catch (err) {
+            throw ({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.CANNOT_FIND, "wallet"), err });
+        }
+
+        if (!wallet) {
+            throw ({ statusCode: StatusCode.NOT_FOUND, message: sprintf(Message.NOT_FOUND, "wallet") });
+        }
+
+        return wallet;
     }
 }
