@@ -1,6 +1,6 @@
 import { Constant } from "../all/constant";
 import * as jwt from "jsonwebtoken";
-import { Utils } from "../libs/utils";
+import { Utils } from "./Utils";
 
 export class JWT {
     private utils = new Utils();

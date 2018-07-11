@@ -5,6 +5,8 @@ import * as bodyParser from "body-parser";
 import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
 import { SmsController } from "./controller/SmsController";
+import { MailController } from "./controller/MailController";
+import { FileController } from "./controller/FileController";
 import * as passport from "passport";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
 import { IError } from "./libs/error";
@@ -13,15 +15,22 @@ import { Log } from "./libs/log";
 createConnection().then(async () => {
     const container = new Container();
     const log: Log = new Log();
+
     container.bind<interfaces.Controller>(TYPE.Controller)
         .to(SmsController).inSingletonScope().whenTargetNamed(SmsController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+    .to(MailController).inSingletonScope().whenTargetNamed(MailController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+    .to(FileController).inSingletonScope().whenTargetNamed(FileController.TARGET_NAME);
 
     const server = new InversifyExpressServer(container);
     // tslint:disable-next-line:no-shadowed-variable
     server.setConfig((app: any) => {
         app.use("/api-docs/swagger", express.static("swagger"));
         app.use("/api-docs/swagger/assets", express.static("node_modules/swagger-ui-dist"));
-        app.use(bodyParser.json());
+        app.use(bodyParser.json({ limit: "50mb" })); // support json encoded bodies
+        app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })); // support encoded bodies
+
         app.use(swagger.express({
             definition: {
                 info: {

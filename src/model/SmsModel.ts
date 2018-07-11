@@ -6,8 +6,21 @@ export class Sms {
     @IsNotEmpty()
     public content: string;
 
-    constructor(phoneNumber, content) {
+    constructor(phoneNumber: string, content: string) {
         this.phoneNumber = phoneNumber;
+        this.content = content;
+    }
+}
+
+// tslint:disable-next-line:max-classes-per-file
+export class MultiSms {
+    @IsNotEmpty()
+    public phoneNumbers: [string];
+    @IsNotEmpty()
+    public content: string;
+
+    constructor(phoneNumbers: [string], content: string) {
+        this.phoneNumbers = phoneNumbers;
         this.content = content;
     }
 }

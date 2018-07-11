@@ -1,6 +1,5 @@
-import { JWT } from "../libs/jwtLib";
+import { JWT } from "./jwtLib";
 import { NextFunction, Request, Response, json } from "express";
-import { injectable } from "inversify";
 
 export class Authenticate {
     public async createInternalToken(id, role): Promise<string> {
