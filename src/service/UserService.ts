@@ -3,11 +3,22 @@ import { User } from "../entity/User";
 import { sprintf } from "sprintf-js";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
+import { Utils } from "../libs/utils";
+import { TYPES } from "../libs/TYPES";
+import { inject, injectable } from "inversify";
+import { Constant } from "../all/constant";
+import { Authenticate } from "../libs/authenticate";
+import { CheckToken, ResendToken } from "../model/UserModel";
+import { validate } from "class-validator";
+import { myContainer } from "../libs/inversify.config";
 
+@injectable()
 export class UserService {
     private userRepository: Repository<User> = getRepository(User);
+    private _authenticate = new Authenticate();
+    private _utils = new Utils();
 
-    public async search(): Promise<User[]> {
+    public async search(body): Promise<User[]> {
         let instances: User[];
 
         try {
@@ -38,8 +49,11 @@ export class UserService {
         return user;
     }
 
-    public async create(body: object): Promise<InsertResult> {
-        let instance: User;
+    public async create(body): Promise<object> {
+        let instance: object;
+        body.active = false;
+        body.otpToken = this._utils.generateOTPToken();
+        const content = "Opt token cua ban la: " + body.otpToken;
 
         try {
             instance = await this.userRepository.create(body);
@@ -50,7 +64,59 @@ export class UserService {
         if (!instance) {
             throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_CREATE, "user") });
         }
+
+        // Send otp code
+        this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: body.phoneNumber, content }, await this._authenticate.createInternalToken());
+
         return this.userRepository.insert(instance);
+    }
+
+    public async checkOtpToken(phoneNumber, otpToken): Promise<boolean> {
+        let user: User;
+        console.log(otpToken);
+        const data = new CheckToken(phoneNumber, otpToken);
+        const errors = await validate(data);
+        if (errors.length > 0) {
+            throw Error(errors.toString());
+        }
+
+        try {
+            user = await this.userRepository.findOne({ phoneNumber, otpToken });
+        } catch (err) {
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user") });
+        }
+
+        user.active = true;
+        if (user) {
+            try {
+                await this.userRepository.update(user.id, user);
+            } catch (err) {
+                throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "user") });
+            }
+        }
+
+        return true;
+    }
+
+    public async resendOtp(phoneNumber): Promise<boolean> {
+        let user: User;
+
+        const data = new ResendToken(phoneNumber);
+        const errors = await validate(data);
+        if (errors.length > 0) {
+            throw Error(errors.toString());
+        }
+
+        try {
+            user = await this.userRepository.findOne({ phoneNumber });
+        } catch (err) {
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user") });
+        }
+
+        const content = "Opt token cua ban la: " + user.otpToken;
+        this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: user.phoneNumber, content }, await this._authenticate.createInternalToken());
+
+        return true;
     }
 
     public async update(id, user: object): Promise<object> {

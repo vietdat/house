@@ -4,7 +4,7 @@ import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { AuthService } from "../service/AuthService";
 import { PassportConfig } from "../libs/passport";
 
-@controller("/auth")
+@controller("/api/user/auth")
 export class Auth {
     private authService = new AuthService();
     private passportConf = new PassportConfig();
@@ -19,6 +19,12 @@ export class Auth {
     @httpPost("/login")
     public async login(request: Request, response: Response, next: NextFunction) {
         const token = await this.authService.login(request.body.phoneNumber, request.body.password);
+        response.status(200).json(token);
+    }
+
+    @httpPost("/forgotpassword")
+    public async forgotpassword(request: Request, response: Response, next: NextFunction) {
+        const token = await this.authService.forgotpassword(request.body.phoneNumber);
         response.status(200).json(token);
     }
 
