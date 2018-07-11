@@ -1,55 +1,37 @@
-// import * as jwt from "jsonwebtoken";
-// import * as passport from "passport";
-// import * as moment from "moment";
-// import { Strategy, ExtractJwt } from "passport-jwt";
-// import { ProjectService } from "../service/ProjectService";
-// import { User } from "../entity/User";
+import { JWT } from "../libs/jwtLib";
+import { NextFunction, Request, Response, json } from "express";
+import { injectable } from "inversify";
 
-// class Auth {
-//     public initialize = () => {
-//         passport.use("jwt", this.getStrategy());
-//         return passport.initialize();
-//     }
+export class Authenticate {
+    public async createInternalToken(id, role): Promise<string> {
+        let token: string;
+        const jwt = new JWT();
+        const dataToken = {
+            id,
+            role
+        };
+        token = await jwt.createInternalToken(dataToken);
+        return token;
+    }
 
-//     public authenticate = (callback) => passport.authenticate("jwt", { session: false, failWithError: true }, callback);
+    public async authInternalToken(request: Request, response: Response, next: NextFunction) {
+        try {
+            const jwt = new JWT();
+            const headers = ["X-Access-Token", "authorization", "accesstoken"];
+            let i;
+            let token;
+            for (i = 0; i < headers.length; i++) {
+                if (request.header(headers[i])) {
+                    token = request.header(headers[i]);
+                }
+            }
+            console.log(await jwt.createInternalToken({id: "1234"}));
+            const data = await jwt.decodeInternalToken(token);
 
-//     private genToken = (user: User): Object => {
-//         let expires = moment().utc().add({ days: 7 }).unix();
-//         let token = jwt.encode({
-//             exp: expires,
-//             id: user.id
-//         }, "Fami@123");
-
-//         return {
-//             token: token,
-//             expires: moment.unix(expires).format(),
-//             user: user.id
-//         };
-//     }
-
-//     private getStrategy = (): Strategy => {
-//         const params = {
-//             secretOrKey: process.env.JWT_SECRET,
-//             jwtFromRequest: ExtractJwt.fromAuthHeader(),
-//             passReqToCallback: true
-//         };
-
-//         return new Strategy(params, (req, payload: any, done) => {
-//             User.findOne({ "username": payload.username }, (err, user) => {
-//                 /* istanbul ignore next: passport response */
-//                 if (err) {
-//                     return done(err);
-//                 }
-//                 /* istanbul ignore next: passport response */
-//                 if (user === null) {
-//                     return done(null, false, { message: "The user in the token was not found" });
-//                 }
-
-//                 return done(null, { _id: user._id, username: user.username });
-//             });
-//         });
-//     }
-
-// }
-
-// export default new Auth();
+            if (!data) { next("err"); } else { next(null); }
+        } catch (err) {
+            console.log("err: ", err);
+            next(err);
+        }
+    }
+}

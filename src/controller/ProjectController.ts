@@ -137,7 +137,7 @@ export class ProjectController {
             400: { description: "Parameters fail" }
         }
     })
-    @httpPost("/:id/update")
+    @httpPost("/:id/active")
     public async active(request: Request, response: Response, next: NextFunction) {
         await this.projectService.active(request.params.id);
     }

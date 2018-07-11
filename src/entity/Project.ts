@@ -45,7 +45,7 @@ export class Project {
     })
     public price: number;
 
-    @Column()
+    @Column({ nullable: true, default: 0 })
     @ApiModelProperty({
         description: "",
         required: true
