@@ -4,26 +4,18 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
-
 import { SmsController } from "./controller/SmsController";
-
 import * as passport from "passport";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
 import { IError } from "./libs/error";
-import { PassportConfig } from "./libs/passport";
 import { Log } from "./libs/log";
-
-import * as https from "https";
-import * as fs from "fs";
 
 createConnection().then(async () => {
     const container = new Container();
-    const passportC = new PassportConfig();
     const log: Log = new Log();
-    passportC.init();
     container.bind<interfaces.Controller>(TYPE.Controller)
         .to(SmsController).inSingletonScope().whenTargetNamed(SmsController.TARGET_NAME);
-    // create server
+
     const server = new InversifyExpressServer(container);
     // tslint:disable-next-line:no-shadowed-variable
     server.setConfig((app: any) => {
@@ -41,9 +33,8 @@ createConnection().then(async () => {
                 }
             }
         }));
-        app.use(passport.initialize());
-        app.use(passport.session());
     });
+
     // tslint:disable-next-line:no-shadowed-variable
     server.setErrorConfig((app: any) => {
         app.use((err: IError, request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -55,14 +46,6 @@ createConnection().then(async () => {
     const app = server.build();
     console.log(passport.initialize());
 
-    // start express server
-    // const options = {
-    //     key: fs.readFileSync("../../key-20180704-112014.pem"),
-    //     cert: fs.readFileSync("../../cert-20180704-112014.crt"),
-    //     requestCert: false,
-    //     rejectUnauthorized: false
-    // };
-    // https.createServer(options, app).listen(5003);
     app.listen(5003);
     console.log("Server has started on port 5003.");
 }).catch((error) => console.log(error));

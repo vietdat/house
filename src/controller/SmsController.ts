@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { controller, httpPost } from "inversify-express-utils";
 import { SmsService } from "../service/SmsService";
-import { StatusCode } from "../all/status-code";
-import { Message } from "../all/message";
 import { Authenticate } from "../libs/authenticate";
-import { sprintf } from "sprintf-js";
-import { inject } from "inversify";
 
 @controller("/api/sms")
 export class SmsController {
