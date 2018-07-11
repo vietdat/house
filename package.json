@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
+    "@types/jwt-simple": "^0.5.33",
     "@types/node": "^8.0.29",
     "@types/passport": "^0.4.5",
     "@types/request-promise": "^4.1.41",

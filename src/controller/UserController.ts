@@ -26,49 +26,13 @@ export class UserController {
             body: { description: "New user", required: true, model: "User" }
         },
         responses: {
-            200: {description: "Success"},
+            200: { description: "Success" },
             400: { description: "Something fail" }
         }
     })
     @httpPut("/")
     public async create(request: Request, response: Response, next: NextFunction) {
         return this.userService.create(request.body);
-    }
-
-    @ApiOperationPost({
-        description: "Check otp token user",
-        summary: "Check otp token user",
-        path: "/otpToken/{token}",
-        parameters: {
-            path: { token: {description: "Token"} }
-        },
-        responses: {
-            200: {description: "Success"},
-            400: { description: "Something fail" }
-        }
-    })
-    @httpPost("/otpToken/:otpToken")
-    public async checkOtpToken(request: Request, response: Response, next: NextFunction) {
-        await this.userService.checkOtpToken(request.body.phoneNumber, request.params.otpToken);
-        return response.json({ success: true });
-    }
-
-    @ApiOperationPost({
-        description: "Resend Otp token",
-        summary: "Resend Otp token",
-        path: "/resend/token",
-        parameters: {
-            path: { token: {description: "Token"} }
-        },
-        responses: {
-            200: {description: "Success"},
-            400: { description: "Something fail" }
-        }
-    })
-    @httpPost("/resend/token")
-    public async resendOtpToken(request: Request, response: Response, next: NextFunction) {
-        await this.userService.resendOtp(request.body.phoneNumber);
-        return response.json({ success: true });
     }
 
     @ApiOperationGet({
@@ -81,7 +45,7 @@ export class UserController {
             apiKeyHeader: []
         }
     })
-    @httpGet("/search", passport.authenticate("jwt", { session: false }))
+    @httpGet("/search")
     public async all(request: Request, response: Response, next: NextFunction) {
         return response.json({ success: true, data: await this.userService.search(request.query) });
     }
@@ -97,9 +61,57 @@ export class UserController {
             200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
         }
     })
-    @httpGet("/{userId}")
-    public async one(request: Request, response: Response, next: NextFunction) {
+    @httpGet("/byId/:userId")
+    public async findById(request: Request, response: Response, next: NextFunction) {
         return this.userService.findOne(request.params.id);
+    }
+
+    @ApiOperationPost({
+        description: "Active user by id",
+        summary: "Active user by id",
+        path: "/{id}/active",
+        parameters: {
+            path: { id: { description: "Success" } }
+        },
+        responses: {
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
+        }
+    })
+    @httpPost("/:userId/active")
+    public async active(request: Request, response: Response, next: NextFunction) {
+        return response.json({ success: true, data: await this.userService.active(request.params.userId)});
+    }
+
+    @ApiOperationPost({
+        description: "softdelete user by id",
+        summary: "softdelete user by id",
+        path: "/{id}/softdelete",
+        parameters: {
+            path: { id: { description: "Success" } }
+        },
+        responses: {
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
+        }
+    })
+    @httpPost("/:userId/softdelete")
+    public async softdelete(request: Request, response: Response, next: NextFunction) {
+        return response.json({ success: true, data: await this.userService.softdelete(request.params.userId)});
+    }
+
+    @ApiOperationPost({
+        description: "Update user",
+        summary: "Update user",
+        path: "/{id}/update",
+        parameters: {
+            path: { id: { description: "Success" } }
+        },
+        responses: {
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "User" }
+        }
+    })
+    @httpPost("/:userId/update")
+    public async update(request: Request, response: Response, next: NextFunction) {
+        return response.json({ success: true, data: await this.userService.update(request.params.userId, request.body)});
     }
 
     @ApiOperationPost({

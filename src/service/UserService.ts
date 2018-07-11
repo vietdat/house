@@ -8,9 +8,9 @@ import { TYPES } from "../libs/TYPES";
 import { inject, injectable } from "inversify";
 import { Constant } from "../all/constant";
 import { Authenticate } from "../libs/authenticate";
-import { CheckToken, ResendToken } from "../model/UserModel";
 import { validate } from "class-validator";
 import { myContainer } from "../libs/inversify.config";
+import { UpdateUserModel } from "../model/UserModel";
 
 @injectable()
 export class UserService {
@@ -18,19 +18,32 @@ export class UserService {
     private _authenticate = new Authenticate();
     private _utils = new Utils();
 
-    public async search(body): Promise<User[]> {
+    public async search(body): Promise<object> {
         let instances: User[];
+        let total: number;
+        let pager;
+
+        const searchData: object = new UpdateUserModel(body);
 
         try {
-            instances = await this.userRepository.find();
+            total = await this.userRepository.count(searchData);
         } catch (err) {
-            throw ({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.ACCEPTED, "user"), err });
+            throw ({ statusCode: StatusCode.BAD_REQUEST, message: sprintf(Message.CANNOT_FIND, "user"), err });
+        }
+
+        pager = this._utils.createPager(body.pageNumber, body.pageSize, total);
+
+        try {
+            instances = await this.userRepository.createQueryBuilder("user").where(searchData).skip(pager.skip).take(pager.limit).getMany();
+            total = await this.userRepository.count(searchData);
+        } catch (err) {
+            throw ({ statusCode: StatusCode.BAD_REQUEST, message: sprintf(Message.CANNOT_FIND, "user"), err });
         }
 
         if (!instances || !instances.length) {
             return [];
         }
-        return instances;
+        return { users: instances, total };
     }
 
     public async findOne(query: object): Promise<User> {
@@ -49,10 +62,33 @@ export class UserService {
         return user;
     }
 
+    public async softdelete(id): Promise<boolean> {
+
+        try {
+            await this.userRepository.update(id, { active: false });
+        } catch (err) {
+            throw ({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.CANNOT_FIND, "user"), err });
+        }
+
+        return true;
+    }
+
+    public async active(id): Promise<boolean> {
+
+        try {
+            await this.userRepository.update(id, { active: true });
+        } catch (err) {
+            throw ({ statusCode: StatusCode.ACCEPTED, message: sprintf(Message.CANNOT_FIND, "user"), err });
+        }
+
+        return true;
+    }
+
     public async create(body): Promise<object> {
         let instance: object;
         body.active = false;
         body.otpToken = this._utils.generateOTPToken();
+        body.referralCode = this._utils.generateOTPToken();
         const content = "Opt token cua ban la: " + body.otpToken;
 
         try {
@@ -71,59 +107,11 @@ export class UserService {
         return this.userRepository.insert(instance);
     }
 
-    public async checkOtpToken(phoneNumber, otpToken): Promise<boolean> {
-        let user: User;
-        console.log(otpToken);
-        const data = new CheckToken(phoneNumber, otpToken);
-        const errors = await validate(data);
-        if (errors.length > 0) {
-            throw Error(errors.toString());
-        }
-
-        try {
-            user = await this.userRepository.findOne({ phoneNumber, otpToken });
-        } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user") });
-        }
-
-        user.active = true;
-        if (user) {
-            try {
-                await this.userRepository.update(user.id, user);
-            } catch (err) {
-                throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "user") });
-            }
-        }
-
-        return true;
-    }
-
-    public async resendOtp(phoneNumber): Promise<boolean> {
-        let user: User;
-
-        const data = new ResendToken(phoneNumber);
-        const errors = await validate(data);
-        if (errors.length > 0) {
-            throw Error(errors.toString());
-        }
-
-        try {
-            user = await this.userRepository.findOne({ phoneNumber });
-        } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user") });
-        }
-
-        const content = "Opt token cua ban la: " + user.otpToken;
-        this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: user.phoneNumber, content }, await this._authenticate.createInternalToken());
-
-        return true;
-    }
-
-    public async update(id, user: object): Promise<object> {
+    public async update(id, user): Promise<boolean> {
         let instance: object;
-
+        const updateData: object = new UpdateUserModel(user);
         try {
-            instance = await this.userRepository.update(id, user);
+            instance = await this.userRepository.update(id, updateData);
         } catch (err) {
             throw err;
         }
@@ -132,7 +120,7 @@ export class UserService {
             throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "user") });
         }
 
-        return instance;
+        return true;
     }
 
     public async findOrCreateFacebook(facebook): Promise<User> {

@@ -177,8 +177,6 @@ export class User extends BaseEntity {
                         (hash: string) => this.password = hash
                     );
             });
-        } else {
-            console.log("test");
         }
     }
 

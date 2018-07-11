@@ -19,13 +19,42 @@ export class Auth {
     @httpPost("/login")
     public async login(request: Request, response: Response, next: NextFunction) {
         const token = await this.authService.login(request.body.phoneNumber, request.body.password);
-        response.status(200).json(token);
+        response.status(200).json({success: true, data: token});
     }
 
     @httpPost("/forgotpassword")
     public async forgotpassword(request: Request, response: Response, next: NextFunction) {
         const token = await this.authService.forgotpassword(request.body.phoneNumber);
-        response.status(200).json(token);
+        response.status(200).json({success: true});
+    }
+
+    @httpPost("/updatepassword", passport.authenticate("jwt", { session: false }))
+    public async updatepassword(request: Request, response: Response, next: NextFunction) {
+        const token = await this.authService.updatepassword(request.body.phoneNumber, request.body.newPassword, request.body.oldPassword);
+        response.status(200).json({success: true});
+    }
+
+    @httpPost("/:phoneNumber/exist")
+    public async checkPhoneExist(request: Request, response: Response, next: NextFunction) {
+        const result = await this.authService.checkPhoneExist(request.params.phoneNumber);
+        response.status(200).json({success: true, data: result});
+    }
+
+    @httpPost("/otpToken/:otpToken")
+    public async checkOtpToken(request: Request, response: Response, next: NextFunction) {
+        await this.authService.checkOtpToken(request.body.phoneNumber, request.params.otpToken);
+        return response.json({ success: true });
+    }
+
+    @httpPost("/resend/token")
+    public async resendOtpToken(request: Request, response: Response, next: NextFunction) {
+        await this.authService.resendOtp(request.body.phoneNumber);
+        return response.json({ success: true });
+    }
+
+    @httpPost("/check/:token", passport.authenticate("jwt", { session: false }))
+    public async checkToken(request: Request, response: Response, next: NextFunction) {
+        return response.json({ success: true });
     }
 
     @httpGet("/secret", passport.authenticate("jwt", { session: false }))
