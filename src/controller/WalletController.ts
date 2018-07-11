@@ -71,7 +71,7 @@ export class WalletController {
         if (errors.length > 0) {
             throw new Error("validation failed. errors: " + errors);
         }
-        return this.walletService.create(wallet);
+        return this.utils.createSuccessResponse(await this.walletService.create(wallet));
     }
 
     @ApiOperationPost({

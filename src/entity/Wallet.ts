@@ -3,10 +3,10 @@ import { ApiModel, ApiModelProperty } from "swagger-express-ts";
 import { encryptionService } from "../libs/encryption";
 import * as typeData from "../libs/typeData";
 
-@Entity("project")
+@Entity("wallet")
 @ApiModel({
-    description: "Project table",
-    name: "Project"
+    description: "Wallet table",
+    name: "Wallet"
 })
 export class Wallet {
     @PrimaryGeneratedColumn("uuid")
@@ -16,13 +16,13 @@ export class Wallet {
     })
     public id: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 0 })
     @ApiModelProperty({
         description: ""
     })
     public balance: number;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, default: 5000000 })
     @ApiModelProperty({
         description: ""
     })
