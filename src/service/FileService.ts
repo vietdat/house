@@ -34,7 +34,7 @@ export class FileService {
                         fileFilter: (_req, file, callback) => {
                             const extension = file.mimetype.split("/")[0];
                             const ext = path.extname(file.originalname);
-                            if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg" && ext !== ".pdf") {
+                            if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg" && ext !== ".pdf" && ext !== ".mp4") {
                                 reject(Error("Only images & PDF are allowed"));
                             }
                             callback(null, true);
