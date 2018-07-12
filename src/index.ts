@@ -6,11 +6,18 @@ import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
 
 import { ProjectController } from "./controller/ProjectController";
+import { PropertyController } from "./controller/PropertyController";
+import { PropertyTypeController } from "./controller/PropertyTypeController";
+import { RelationController } from "./controller/RelationController";
+import { ReportController } from "./controller/ReportController";
+import { InterestedController } from "./controller/InterestedController";
+import { CommentController } from "./controller/CommentController";
+
 // import { Auth } from "./controller/Auth";
 
-import * as passport from "passport";
+// import * as passport from "passport";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
-import { IError } from "../src/libs/error";
+import { IError } from "./libs/error";
 import { Log } from "./libs/log";
 
 import * as https from "https";
@@ -21,8 +28,20 @@ createConnection().then(async () => {
     const log: Log = new Log();
     container.bind<interfaces.Controller>(TYPE.Controller)
         .to(ProjectController).inSingletonScope().whenTargetNamed(ProjectController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+        .to(PropertyController).inSingletonScope().whenTargetNamed(PropertyController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+        .to(PropertyTypeController).inSingletonScope().whenTargetNamed(PropertyTypeController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+        .to(RelationController).inSingletonScope().whenTargetNamed(RelationController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+        .to(ReportController).inSingletonScope().whenTargetNamed(ReportController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+        .to(InterestedController).inSingletonScope().whenTargetNamed(InterestedController.TARGET_NAME);
+    container.bind<interfaces.Controller>(TYPE.Controller)
+        .to(CommentController).inSingletonScope().whenTargetNamed(CommentController.TARGET_NAME);
     // container.bind<interfaces.Controller>(TYPE.Controller)
-        // .to(Auth).inSingletonScope().whenTargetNamed("auth");
+    // .to(Auth).inSingletonScope().whenTargetNamed("auth");
     // create server
     const server = new InversifyExpressServer(container);
     // tslint:disable-next-line:no-shadowed-variable
@@ -41,8 +60,8 @@ createConnection().then(async () => {
                 }
             }
         }));
-        app.use(passport.initialize());
-        app.use(passport.session());
+        // app.use(passport.initialize());
+        // app.use(passport.session());
     });
     // tslint:disable-next-line:no-shadowed-variable
     server.setErrorConfig((app: any) => {
@@ -52,7 +71,7 @@ createConnection().then(async () => {
         });
     });
     const app = server.build();
-    console.log(passport.initialize());
+    // console.log(passport.initialize());
 
     // start express server
     // const options = {

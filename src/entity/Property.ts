@@ -3,12 +3,12 @@ import { ApiModel, ApiModelProperty } from "swagger-express-ts";
 import { encryptionService } from "../libs/encryption";
 import * as typeData from "../libs/typeData";
 
-@Entity("project")
+@Entity("property")
 @ApiModel({
-    description: "Project table",
-    name: "Project"
+    description: "Property table",
+    name: "Property"
 })
-export class Project {
+export class Property {
     @PrimaryGeneratedColumn("uuid")
     @ApiModelProperty({
         description: "Id of version",
@@ -21,13 +21,6 @@ export class Project {
         description: ""
     })
     public address: JSON;
-
-    @Column({ nullable: true, type: "json" })
-    @ApiModelProperty({
-        description: "",
-        required: true
-    })
-    public properties: JSON;
 
     @Column({
         nullable: true
@@ -126,12 +119,6 @@ export class Project {
     })
     public status: Status;
 
-    @Column({ nullable: true })
-    @ApiModelProperty({
-        description: ""
-    })
-    public totalProperty: number;
-
     @Column({ nullable: true, type: "simple-json" })
     @ApiModelProperty({
         description: ""
@@ -161,6 +148,12 @@ export class Project {
         description: ""
     })
     public designImages: [JSON];
+
+    @Column({ nullable: true })
+    @ApiModelProperty({
+        description: ""
+    })
+    public projectId: string;
 
     @Column({ nullable: true })
     @ApiModelProperty({

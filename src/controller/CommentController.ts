@@ -1,28 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
 import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
-import { ProjectService } from "../service/ProjectService";
+import { CommentService } from "../service/CommentService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
 import { sprintf } from "sprintf-js";
 import { Utils } from "../libs/utils";
-import { ProjectModel } from "../model/ProjectModel";
+import { CommentModel } from "../model/CommentModel";
 import { validate } from "class-validator";
 
 @ApiPath({
-    path: "/project",
-    name: "project"
+    path: "/comment",
+    name: "comment"
 })
-@controller("/project")
-export class ProjectController {
-    public static TARGET_NAME: string = "ProjectController - 1";
-    private projectService = new ProjectService();
+@controller("/comment")
+export class CommentController {
+    public static TARGET_NAME: string = "CommentController - 1";
+    private commentService = new CommentService();
     private utils = new Utils();
     @ApiOperationGet({
-        description: "Get users objects list",
-        summary: "Get users list",
+        description: "Search comment",
+        summary: "Search comment",
         responses: {
-            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "Project" }
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "Comment" }
         },
         security: {
             apiKeyHeader: []
@@ -30,33 +30,33 @@ export class ProjectController {
     })
     @httpGet("/search")
     public async search(request: Request, response: Response, next: NextFunction) {
-        const query: ProjectModel = new ProjectModel(request.query);
-        const data = this.utils.createSuccessResponse(await this.projectService.search(query));
+        const query: CommentModel = new CommentModel(request.query);
+        const data = this.utils.createSuccessResponse(await this.commentService.search(query));
         return data;
     }
 
     @ApiOperationGet({
-        description: "Get project by id",
-        summary: "Get project by id",
+        description: "Get comment by id",
+        summary: "Get comment by id",
         path: "/{id}",
         parameters: {
             path: { id: { description: "Success" } }
         },
         responses: {
-            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "Project" }
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "Comment" }
         }
     })
     @httpGet("/byid/:id")
     public async findById(request: Request, response: Response, next: NextFunction) {
-        const data = this.utils.createSuccessResponse(await this.projectService.findOne(request.params.id));
+        const data = this.utils.createSuccessResponse(await this.commentService.findOne(request.params.id));
         return data;
     }
 
     @ApiOperationPost({
-        description: "Post project object",
-        summary: "Post project version",
+        description: "Create comment object",
+        summary: "Create comment version",
         parameters: {
-            body: { description: "New project", required: true, model: "Project" }
+            body: { description: "New comment", required: true, model: "Comment" }
         },
         responses: {
             200: { description: "Success" },
@@ -65,19 +65,19 @@ export class ProjectController {
     })
     @httpPut("/")
     public async createOne(request: Request, response: Response, next: NextFunction) {
-        const project: ProjectModel = new ProjectModel(request.body);
-        const errors = await validate(project);
+        const comment: CommentModel = new CommentModel(request.body);
+        const errors = await validate(comment);
         if (errors.length > 0) {
             throw new Error("validation failed. errors: " + errors);
         }
-        return this.projectService.create(project);
+        return this.commentService.create(comment);
     }
 
     @ApiOperationPost({
-        description: "Update project object",
-        summary: "Update project version",
+        description: "Update comment object",
+        summary: "Update comment version",
         parameters: {
-            body: { description: "Update fields", required: true, model: "Project" }
+            body: { description: "Update fields", required: true, model: "Comment" }
         },
         responses: {
             200: { description: "Success" },
@@ -86,19 +86,19 @@ export class ProjectController {
     })
     @httpPost("/:id/update")
     public async updateOne(request: Request, response: Response, next: NextFunction) {
-        const project: ProjectModel = new ProjectModel(request.body);
-        const errors = await validate(project);
+        const comment: CommentModel = new CommentModel(request.body);
+        const errors = await validate(comment);
         if (errors.length > 0) {
             throw new Error("validation failed. errors: " + errors);
         }
-        return this.projectService.update(request.params.id, project);
+        return this.commentService.update(request.params.id, comment);
     }
 
     @ApiOperationPost({
-        description: "Remove project object",
-        summary: "Remove project version",
+        description: "Remove comment object",
+        summary: "Remove comment version",
         parameters: {
-            body: { description: "New project", required: true, model: "Project" }
+            body: { description: "New comment", required: true, model: "Comment" }
         },
         responses: {
             200: { description: "Success" },
@@ -107,14 +107,14 @@ export class ProjectController {
     })
     @httpPost("/:id/delete")
     public async remove(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.remove(request.params.id);
+        await this.commentService.remove(request.params.id);
     }
 
     @ApiOperationPost({
-        description: "Soft delete project object",
-        summary: "Soft delete project version",
+        description: "Soft delete comment object",
+        summary: "Soft delete comment version",
         parameters: {
-            body: { description: "Id of project", required: true, model: "Project" }
+            body: { description: "Id of comment", required: true, model: "Comment" }
         },
         responses: {
             200: { description: "Success" },
@@ -123,14 +123,14 @@ export class ProjectController {
     })
     @httpPost("/:id/softdelete")
     public async softDelete(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.softDelete(request.params.id);
+        await this.commentService.softDelete(request.params.id);
     }
 
     @ApiOperationPost({
-        description: "Active project object",
-        summary: "Active project version",
+        description: "Active comment object",
+        summary: "Active comment version",
         parameters: {
-            body: { description: "Id of project", required: true, model: "Project" }
+            body: { description: "Id of comment", required: true, model: "Comment" }
         },
         responses: {
             200: { description: "Success" },
@@ -139,6 +139,6 @@ export class ProjectController {
     })
     @httpPost("/:id/active")
     public async active(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.active(request.params.id);
+        await this.commentService.active(request.params.id);
     }
 }

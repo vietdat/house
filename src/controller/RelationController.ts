@@ -1,28 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
 import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
-import { ProjectService } from "../service/ProjectService";
+import { RelationService } from "../service/RelationService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
 import { sprintf } from "sprintf-js";
 import { Utils } from "../libs/utils";
-import { ProjectModel } from "../model/ProjectModel";
+import { RelationModel } from "../model/RelationModel";
 import { validate } from "class-validator";
 
 @ApiPath({
-    path: "/project",
-    name: "project"
+    path: "/relation",
+    name: "relation"
 })
-@controller("/project")
-export class ProjectController {
-    public static TARGET_NAME: string = "ProjectController - 1";
-    private projectService = new ProjectService();
+@controller("/relation")
+export class RelationController {
+    public static TARGET_NAME: string = "RelationController - 1";
+    private relationService = new RelationService();
     private utils = new Utils();
     @ApiOperationGet({
-        description: "Get users objects list",
-        summary: "Get users list",
+        description: "Search Relation",
+        summary: "Search Relation",
         responses: {
-            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "Project" }
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "Relation" }
         },
         security: {
             apiKeyHeader: []
@@ -30,33 +30,33 @@ export class ProjectController {
     })
     @httpGet("/search")
     public async search(request: Request, response: Response, next: NextFunction) {
-        const query: ProjectModel = new ProjectModel(request.query);
-        const data = this.utils.createSuccessResponse(await this.projectService.search(query));
+        const query: RelationModel = new RelationModel(request.query);
+        const data = this.utils.createSuccessResponse(await this.relationService.search(query));
         return data;
     }
 
     @ApiOperationGet({
-        description: "Get project by id",
-        summary: "Get project by id",
+        description: "Get relation by id",
+        summary: "Get relation by id",
         path: "/{id}",
         parameters: {
             path: { id: { description: "Success" } }
         },
         responses: {
-            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "Project" }
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "Relation" }
         }
     })
     @httpGet("/byid/:id")
     public async findById(request: Request, response: Response, next: NextFunction) {
-        const data = this.utils.createSuccessResponse(await this.projectService.findOne(request.params.id));
+        const data = this.utils.createSuccessResponse(await this.relationService.findOne(request.params.id));
         return data;
     }
 
     @ApiOperationPost({
-        description: "Post project object",
-        summary: "Post project version",
+        description: "Create relation object",
+        summary: "Create relation version",
         parameters: {
-            body: { description: "New project", required: true, model: "Project" }
+            body: { description: "New relation", required: true, model: "relation" }
         },
         responses: {
             200: { description: "Success" },
@@ -65,19 +65,19 @@ export class ProjectController {
     })
     @httpPut("/")
     public async createOne(request: Request, response: Response, next: NextFunction) {
-        const project: ProjectModel = new ProjectModel(request.body);
-        const errors = await validate(project);
+        const report: RelationModel = new RelationModel(request.body);
+        const errors = await validate(report);
         if (errors.length > 0) {
             throw new Error("validation failed. errors: " + errors);
         }
-        return this.projectService.create(project);
+        return this.relationService.create(report);
     }
 
     @ApiOperationPost({
-        description: "Update project object",
-        summary: "Update project version",
+        description: "Update relation object",
+        summary: "Update relation version",
         parameters: {
-            body: { description: "Update fields", required: true, model: "Project" }
+            body: { description: "Update fields", required: true, model: "Relation" }
         },
         responses: {
             200: { description: "Success" },
@@ -86,19 +86,19 @@ export class ProjectController {
     })
     @httpPost("/:id/update")
     public async updateOne(request: Request, response: Response, next: NextFunction) {
-        const project: ProjectModel = new ProjectModel(request.body);
-        const errors = await validate(project);
+        const report: RelationModel = new RelationModel(request.body);
+        const errors = await validate(report);
         if (errors.length > 0) {
             throw new Error("validation failed. errors: " + errors);
         }
-        return this.projectService.update(request.params.id, project);
+        return this.relationService.update(request.params.id, report);
     }
 
     @ApiOperationPost({
-        description: "Remove project object",
-        summary: "Remove project version",
+        description: "Remove relation object",
+        summary: "Remove relation version",
         parameters: {
-            body: { description: "New project", required: true, model: "Project" }
+            body: { description: "New relation", required: true, model: "Relation" }
         },
         responses: {
             200: { description: "Success" },
@@ -107,14 +107,14 @@ export class ProjectController {
     })
     @httpPost("/:id/delete")
     public async remove(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.remove(request.params.id);
+        await this.relationService.remove(request.params.id);
     }
 
     @ApiOperationPost({
-        description: "Soft delete project object",
-        summary: "Soft delete project version",
+        description: "Soft delete relation object",
+        summary: "Soft delete relation version",
         parameters: {
-            body: { description: "Id of project", required: true, model: "Project" }
+            body: { description: "Id of relation", required: true, model: "Relation" }
         },
         responses: {
             200: { description: "Success" },
@@ -123,14 +123,14 @@ export class ProjectController {
     })
     @httpPost("/:id/softdelete")
     public async softDelete(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.softDelete(request.params.id);
+        await this.relationService.softDelete(request.params.id);
     }
 
     @ApiOperationPost({
-        description: "Active project object",
-        summary: "Active project version",
+        description: "Active relation object",
+        summary: "Active relation version",
         parameters: {
-            body: { description: "Id of project", required: true, model: "Project" }
+            body: { description: "Id of relation", required: true, model: "Relation" }
         },
         responses: {
             200: { description: "Success" },
@@ -139,6 +139,6 @@ export class ProjectController {
     })
     @httpPost("/:id/active")
     public async active(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.active(request.params.id);
+        await this.relationService.active(request.params.id);
     }
 }

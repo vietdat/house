@@ -1,28 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiPath, ApiOperationGet, SwaggerDefinitionConstant, ApiOperationPost } from "swagger-express-ts";
 import { controller, httpGet, httpPost, httpPut } from "inversify-express-utils";
-import { ProjectService } from "../service/ProjectService";
+import { PropertyTypeService } from "../service/PropertyTypeService";
 import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
 import { sprintf } from "sprintf-js";
 import { Utils } from "../libs/utils";
-import { ProjectModel } from "../model/ProjectModel";
+import { PropertyTypeModel } from "../model/PropertyTypeModel";
 import { validate } from "class-validator";
 
 @ApiPath({
-    path: "/project",
-    name: "project"
+    path: "/propertytype",
+    name: "propertytype"
 })
-@controller("/project")
-export class ProjectController {
-    public static TARGET_NAME: string = "ProjectController - 1";
-    private projectService = new ProjectService();
+@controller("/propertytype")
+export class PropertyTypeController {
+    public static TARGET_NAME: string = "PropertyTypeController - 1";
+    private propertyTypeService = new PropertyTypeService();
     private utils = new Utils();
     @ApiOperationGet({
-        description: "Get users objects list",
-        summary: "Get users list",
+        description: "Search property type",
+        summary: "Search property type",
         responses: {
-            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "Project" }
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.ARRAY, model: "propertyType" }
         },
         security: {
             apiKeyHeader: []
@@ -30,33 +30,33 @@ export class ProjectController {
     })
     @httpGet("/search")
     public async search(request: Request, response: Response, next: NextFunction) {
-        const query: ProjectModel = new ProjectModel(request.query);
-        const data = this.utils.createSuccessResponse(await this.projectService.search(query));
+        const query: PropertyTypeModel = new PropertyTypeModel(request.query);
+        const data = this.utils.createSuccessResponse(await this.propertyTypeService.search(query));
         return data;
     }
 
     @ApiOperationGet({
-        description: "Get project by id",
-        summary: "Get project by id",
+        description: "Get property type by id",
+        summary: "Get property type by id",
         path: "/{id}",
         parameters: {
             path: { id: { description: "Success" } }
         },
         responses: {
-            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "Project" }
+            200: { description: "Success", type: SwaggerDefinitionConstant.Response.Type.OBJECT, model: "propertyType" }
         }
     })
     @httpGet("/byid/:id")
     public async findById(request: Request, response: Response, next: NextFunction) {
-        const data = this.utils.createSuccessResponse(await this.projectService.findOne(request.params.id));
+        const data = this.utils.createSuccessResponse(await this.propertyTypeService.findOne(request.params.id));
         return data;
     }
 
     @ApiOperationPost({
-        description: "Post project object",
-        summary: "Post project version",
+        description: "Create property type object",
+        summary: "Create property type version",
         parameters: {
-            body: { description: "New project", required: true, model: "Project" }
+            body: { description: "New property type", required: true, model: "propertyType" }
         },
         responses: {
             200: { description: "Success" },
@@ -65,19 +65,19 @@ export class ProjectController {
     })
     @httpPut("/")
     public async createOne(request: Request, response: Response, next: NextFunction) {
-        const project: ProjectModel = new ProjectModel(request.body);
-        const errors = await validate(project);
+        const propertyType: PropertyTypeModel = new PropertyTypeModel(request.body);
+        const errors = await validate(propertyType);
         if (errors.length > 0) {
             throw new Error("validation failed. errors: " + errors);
         }
-        return this.projectService.create(project);
+        return this.propertyTypeService.create(propertyType);
     }
 
     @ApiOperationPost({
-        description: "Update project object",
-        summary: "Update project version",
+        description: "Update property type object",
+        summary: "Update property type version",
         parameters: {
-            body: { description: "Update fields", required: true, model: "Project" }
+            body: { description: "Update fields", required: true, model: "propertyType" }
         },
         responses: {
             200: { description: "Success" },
@@ -86,19 +86,19 @@ export class ProjectController {
     })
     @httpPost("/:id/update")
     public async updateOne(request: Request, response: Response, next: NextFunction) {
-        const project: ProjectModel = new ProjectModel(request.body);
-        const errors = await validate(project);
+        const propertyType: PropertyTypeModel = new PropertyTypeModel(request.body);
+        const errors = await validate(propertyType);
         if (errors.length > 0) {
             throw new Error("validation failed. errors: " + errors);
         }
-        return this.projectService.update(request.params.id, project);
+        return this.propertyTypeService.update(request.params.id, propertyType);
     }
 
     @ApiOperationPost({
-        description: "Remove project object",
-        summary: "Remove project version",
+        description: "Remove property type object",
+        summary: "Remove property type version",
         parameters: {
-            body: { description: "New project", required: true, model: "Project" }
+            body: { description: "New property type", required: true, model: "propertyType" }
         },
         responses: {
             200: { description: "Success" },
@@ -107,14 +107,14 @@ export class ProjectController {
     })
     @httpPost("/:id/delete")
     public async remove(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.remove(request.params.id);
+        await this.propertyTypeService.remove(request.params.id);
     }
 
     @ApiOperationPost({
-        description: "Soft delete project object",
-        summary: "Soft delete project version",
+        description: "Soft delete property type object",
+        summary: "Soft delete property type version",
         parameters: {
-            body: { description: "Id of project", required: true, model: "Project" }
+            body: { description: "Id of property type", required: true, model: "propertyType" }
         },
         responses: {
             200: { description: "Success" },
@@ -123,14 +123,14 @@ export class ProjectController {
     })
     @httpPost("/:id/softdelete")
     public async softDelete(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.softDelete(request.params.id);
+        await this.propertyTypeService.softDelete(request.params.id);
     }
 
     @ApiOperationPost({
-        description: "Active project object",
-        summary: "Active project version",
+        description: "Active property type object",
+        summary: "Active property type version",
         parameters: {
-            body: { description: "Id of project", required: true, model: "Project" }
+            body: { description: "Id of property type", required: true, model: "propertyType" }
         },
         responses: {
             200: { description: "Success" },
@@ -139,6 +139,6 @@ export class ProjectController {
     })
     @httpPost("/:id/active")
     public async active(request: Request, response: Response, next: NextFunction) {
-        await this.projectService.active(request.params.id);
+        await this.propertyTypeService.active(request.params.id);
     }
 }
