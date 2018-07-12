@@ -50,7 +50,7 @@ export class Comment {
     })
     public active: boolean;
 
-    @Column({ default: true })
+    @Column()
     @ApiModelProperty({
         description: "",
         required: true
