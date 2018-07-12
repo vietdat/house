@@ -13,7 +13,7 @@ import { validate } from "class-validator";
     path: "/project",
     name: "project"
 })
-@controller("/project")
+@controller("/api/project")
 export class ProjectController {
     public static TARGET_NAME: string = "ProjectController - 1";
     private projectService = new ProjectService();

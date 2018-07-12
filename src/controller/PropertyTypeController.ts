@@ -13,7 +13,7 @@ import { validate } from "class-validator";
     path: "/propertytype",
     name: "propertytype"
 })
-@controller("/propertytype")
+@controller("/api/propertytype")
 export class PropertyTypeController {
     public static TARGET_NAME: string = "PropertyTypeController - 1";
     private propertyTypeService = new PropertyTypeService();

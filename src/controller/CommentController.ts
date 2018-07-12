@@ -13,7 +13,7 @@ import { validate } from "class-validator";
     path: "/comment",
     name: "comment"
 })
-@controller("/comment")
+@controller("/api/comment")
 export class CommentController {
     public static TARGET_NAME: string = "CommentController - 1";
     private commentService = new CommentService();

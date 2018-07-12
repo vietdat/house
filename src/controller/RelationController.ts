@@ -13,7 +13,7 @@ import { validate } from "class-validator";
     path: "/relation",
     name: "relation"
 })
-@controller("/relation")
+@controller("/api/relation")
 export class RelationController {
     public static TARGET_NAME: string = "RelationController - 1";
     private relationService = new RelationService();
