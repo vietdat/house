@@ -18,7 +18,7 @@ export class FileService {
         return new Promise((resolve) => {
             async.autoInject({
                 uploadFile: (done) => {
-                    const directory = "./storage/uploads";
+                    const directory = "./storage";
                     const maxSize = 6 * 1000 * 1000;
                     const storage = multer.diskStorage({
                         destination: (_req, file, callback) => {
@@ -52,7 +52,7 @@ export class FileService {
                             const result = {
                                 type: ext,
                                 name: element.filename,
-                                url: sprintf(Constant.URL_FILEUPLOAD, "uploads", element.filename)
+                                url: sprintf(Constant.URL_FILEUPLOAD, element.filename)
                             };
                             returnData = {
                                 name: element.filename,
@@ -77,7 +77,7 @@ export class FileService {
         return new Promise((resolve) => {
             async.autoInject({
                 uploadFile: (done) => {
-                    const directory = "./storage/uploads";
+                    const directory = "./storage";
                     const maxSize = 6 * 1000 * 1000;
                     const storage = multer.diskStorage({
                         destination: (_req, file, callback) => {
@@ -111,7 +111,7 @@ export class FileService {
                                 const result = {
                                     type: ext,
                                     name: element.filename,
-                                    url: sprintf(Constant.URL_FILEUPLOAD, "uploads", element.filename)
+                                    url: sprintf(Constant.URL_FILEUPLOAD, element.filename)
                                 };
 
                                 returnData.push(result);
@@ -131,7 +131,7 @@ export class FileService {
     }
 
     public async getFile(fileName, folderName, res) {
-        const readFile = path.join(__dirname, "../", "../", "storage/", folderName + "/", fileName);
+        const readFile = path.join(__dirname, "../", "../", "storage/", fileName);
         const dir = fs.createReadStream(readFile);
         dir.on("error", (req, next) => {
             throw (this.utils.createError({ statusCode: StatusCode.NOT_FOUND, message: sprintf(Message.NOT_FOUND, "File") }));

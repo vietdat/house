@@ -4,6 +4,6 @@ export class Constant {
     public static readonly myReadonlyProperty = 1;
     public static readonly SMS_URL = "http://api.speedsms.vn/index.php";
     public static readonly SMS_TOKEN = "Basic ZFg1UnRSVTd0bGh4akRtVEhXZV9PZkE5UWxPVTk1WE46eA==";
-    public static readonly URL_FILEUPLOAD = "http://localhost:5003/api/file/%s/%s";
+    public static readonly URL_FILEUPLOAD = "http://localhost:5003/api/file/%s";
 
 }

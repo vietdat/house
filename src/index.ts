@@ -7,7 +7,6 @@ import { Container } from "inversify";
 import { SmsController } from "./controller/SmsController";
 import { MailController } from "./controller/MailController";
 import { FileController } from "./controller/FileController";
-import * as passport from "passport";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
 import { IError } from "./libs/error";
 import { Log } from "./libs/log";
