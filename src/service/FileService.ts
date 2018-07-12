@@ -15,7 +15,7 @@ export class FileService {
     private utils = new Utils();
 
     public async uploadFile(req, res) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             async.autoInject({
                 uploadFile: (done) => {
                     const directory = "./storage";
@@ -35,7 +35,7 @@ export class FileService {
                             const extension = file.mimetype.split("/")[0];
                             const ext = path.extname(file.originalname);
                             if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg" && ext !== ".pdf") {
-                                return callback(Error("Only images & PDF are allowed"), false);
+                                reject(Error("Only images & PDF are allowed"));
                             }
                             callback(null, true);
                         }
@@ -45,7 +45,7 @@ export class FileService {
                     upload(req, res, (err) => {
 
                         if (err) {
-                            done(Error(err));
+                            reject(Error(err));
                         } else {
                             const element = req.files[0];
                             const ext = path.extname(element.originalname);
@@ -65,7 +65,7 @@ export class FileService {
                 }
             }, (err, data) => {
                 if (err) {
-                    throw err;
+                    reject(err);
                 }
 
                 resolve(data.uploadFile);
@@ -74,7 +74,7 @@ export class FileService {
     }
 
     public async uploadMultiFile(req, res) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             async.autoInject({
                 uploadFile: (done) => {
                     const directory = "./storage";
@@ -94,7 +94,7 @@ export class FileService {
                             const extension = file.mimetype.split("/")[0];
                             const ext = path.extname(file.originalname);
                             if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg" && ext !== ".pdf") {
-                                return callback(Error("Only images & PDF are allowed"), false);
+                                reject(Error("Only images & PDF are allowed"));
                             }
                             callback(null, true);
                         }
@@ -104,7 +104,7 @@ export class FileService {
                     let returnData = [];
                     upload(req, res, (err) => {
                         if (err) {
-                            done(Error(err));
+                            reject(Error(err));
                         } else {
                             req.files.forEach((element) => {
                                 const ext = path.extname(element.originalname);
@@ -122,7 +122,7 @@ export class FileService {
                 }
             }, (err, data) => {
                 if (err) {
-                    throw err;
+                    reject(err);
                 }
 
                 resolve(data.uploadFile);
