@@ -38,7 +38,7 @@
     "sprintf-js": "^1.1.1",
     "swagger-express-ts": "^1.0.0",
     "swagger-ui-dist": "^3.17.2",
-    "typeorm": "0.2.7"
+    "typeorm": "^0.2.7"
   },
   "scripts": {
     "tslint": "tslint --fix -c tslint.json -p tsconfig.json ",

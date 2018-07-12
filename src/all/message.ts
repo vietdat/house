@@ -9,5 +9,5 @@ export class Message {
     public static readonly CANNOT_DELETE = "Cannot delete %s";
     public static readonly CANNOT_SOFT_DELETE = "Cannot soft delete %s";
     public static readonly CANNOT_ACTIVE = "Cannot active %s";
-
+    public static readonly PAGE_SIZE_TOO_LARGE = "Page size too large";
 }
