@@ -5,8 +5,11 @@ import { Constant } from "../all/constant";
 import { validate } from "class-validator";
 import * as path from "path";
 import * as multer from "multer";
+import * as fs from "fs";
 import * as async from "async";
 import { sprintf } from "sprintf-js";
+import { Message } from "../all/message";
+import { StatusCode } from "../all/status-code";
 
 export class FileService {
     private utils = new Utils();
@@ -67,6 +70,79 @@ export class FileService {
 
                 resolve(data.uploadFile);
             });
+        });
+    }
+
+    public async uploadMultiFile(req, res) {
+        return new Promise((resolve) => {
+            async.autoInject({
+                uploadFile: (done) => {
+                    const directory = "./storage/uploads";
+                    const maxSize = 6 * 1000 * 1000;
+                    const storage = multer.diskStorage({
+                        destination: (_req, file, callback) => {
+                            callback(null, directory);
+                        },
+                        filename: (_req, file, callback) => {
+                            callback(null, Date.now() + path.extname(file.originalname));
+                        }
+                    });
+
+                    const upload = multer({
+                        storage,
+                        fileFilter: (_req, file, callback) => {
+                            const extension = file.mimetype.split("/")[0];
+                            const ext = path.extname(file.originalname);
+                            if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg" && ext !== ".pdf") {
+                                return callback(Error("Only images & PDF are allowed"), false);
+                            }
+                            callback(null, true);
+                        }
+                    }).any();
+
+                    // tslint:disable-next-line:prefer-const
+                    let returnData = [];
+                    upload(req, res, (err) => {
+                        if (err) {
+                            done(Error(err));
+                        } else {
+                            req.files.forEach((element) => {
+                                const ext = path.extname(element.originalname);
+                                const result = {
+                                    type: ext,
+                                    name: element.filename,
+                                    url: sprintf(Constant.URL_FILEUPLOAD, "uploads", element.filename)
+                                };
+
+                                returnData.push(result);
+                            });
+                            done(null, returnData);
+                        }
+                    });
+                }
+            }, (err, data) => {
+                if (err) {
+                    throw err;
+                }
+
+                resolve(data.uploadFile);
+            });
+        });
+    }
+
+    public async getFile(fileName, folderName, res) {
+        const readFile = path.join(__dirname, "../", "../", "storage/", folderName + "/", fileName);
+        const dir = fs.createReadStream(readFile);
+        dir.on("error", (req, next) => {
+            throw (this.utils.createError({ statusCode: StatusCode.NOT_FOUND, message: sprintf(Message.NOT_FOUND, "File") }));
+        });
+        await this.streamFinished(dir.pipe(res));
+    }
+
+    private streamFinished(stream: NodeJS.ReadableStream) {
+        return new Promise((resolve, reject) => {
+            stream.on("end", () => resolve());
+            stream.on("error", () => reject());
         });
     }
 }

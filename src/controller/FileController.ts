@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { controller, httpPost } from "inversify-express-utils";
+import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { FileService } from "../service/FileService";
 import { Authenticate } from "../libs/authenticate";
 
@@ -8,18 +8,18 @@ export class FileController {
     public static TARGET_NAME: string = "FileController - 1";
     private fileService = new FileService();
 
-    @httpPost("/upload")
+    @httpPost("/upload", new Authenticate().authInternalToken)
     public async uploadFile(request: Request, response: Response, next: NextFunction) {
         return response.json({ success: true, data: await this.fileService.uploadFile(request, response)});
     }
 
-    // @httpPost("/multi/upload", new Authenticate().authInternalToken)
-    // public async uploadMultiFile(request: Request, response: Response, next: NextFunction) {
-    //     return response.json({ success: true, data: await this.fileService.uploadMultiFile(request.body.efiles, request.body.subject, request.body.content) });
-    // }
+    @httpPost("/multi/upload", new Authenticate().authInternalToken)
+    public async uploadMultiFile(request: Request, response: Response, next: NextFunction) {
+        return response.json({ success: true, data: await this.fileService.uploadMultiFile(request, response) });
+    }
 
-    // @httpGet("/:folder/:fileName", new Authenticate().authInternalToken)
-    // public async getFile(request: Request, response: Response, next: NextFunction) {
-    //     return response.json({ success: true, data: await this.fileService.getFile(request.body.efiles, request.body.subject, request.body.content) });
-    // }
+    @httpGet("/:folder/:fileName")
+    public async getFile(request: Request, response: Response, next: NextFunction) {
+        await this.fileService.getFile(request.params.fileName, request.params.folder, response);
+    }
 }
