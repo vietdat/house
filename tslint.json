@@ -1,0 +1,32 @@
+{
+    "extends": "tslint:latest",
+    "rules": {
+      "quotemark": [true, "double"],
+      "no-bitwise": false,
+      "no-constructor-vars": false,
+      "max-line-length": [false, 120],
+      "object-literal-sort-keys": false,
+      "no-string-literal": false,
+      "no-console": [false, "log", "error"],
+      "no-any": false,
+      "ordered-imports": [false],
+      "eofline": false,
+      "member-access": true,
+      "whitespace": [true, "check-branch","check-decl","check-operator","check-module","check-separator","check-type"],
+      "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+      "trailing-comma": false
+    },
+    "compilerOptions": {
+      "lib": [
+         "es5",
+         "es6"
+      ],
+      "target": "es5",
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "outDir": "./build",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "sourceMap": true
+   }
+  }

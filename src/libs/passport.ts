@@ -1,144 +1,133 @@
-import passport from "passport";
-import request from "request";
-import passportLocal from "passport-local";
-import passportFacebook from "passport-facebook";
-// import _ from "lodash";
-import { getRepository } from "typeorm";
-
-import { User } from "../entity/User";
+import * as passport from "passport";
+import * as passportLocal from "passport-local";
+import * as passportFacebook from "passport-facebook";
+import * as passportTwitter from "passport-twitter";
+import * as passportGoogle from "passport-google-oauth";
+import * as _ from "lodash";
+import * as passportJWT from "passport-jwt";
+import { UserService } from "../service/UserService";
 import { Request, Response, NextFunction } from "express";
-import { Utils } from "../libs/utils";
 
-const utils = new Utils();
+export class PassportConfig {
+    private userService = new UserService();
 
-const LocalStrategy = passportLocal.Strategy;
-const FacebookStrategy = passportFacebook.Strategy;
+    public init() {
+        const localStrategy = passportLocal.Strategy;
+        const ExtractJwt = passportJWT.ExtractJwt;
+        const jwtStrategy = passportJWT.Strategy;
+        const facebookStrategy = passportFacebook.Strategy;
+        const twitterStrategy = passportTwitter.Strategy;
+        const googleStrategy = passportGoogle.OAuth2Strategy;
 
-const userRepository = getRepository(User);
+        const jwtOptions = {
+            jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+            secretOrKey: "Fami@123"
+        };
 
-passport.serializeUser<any, any>((user, done) => {
-    done(undefined, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-    userRepository.findOne(id).then((user) => {
-        done(null, user);
-    }).catch(err => {
-        done(err);
-    });
-});
-
-
-/**
- * Sign in using Email and Password.
- */
-passport.use(new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
-    userRepository.findOne({ email: email.toLowerCase() })
-        .then((user) => {
-            if (!user) {
-                return done(undefined, false, { message: `Email ${email} not found.` });
+        const strategy = new jwtStrategy(jwtOptions, async (jwtPayload, next) => {
+            const userService = new UserService();
+            // console.log("payload received", jwtPayload);
+            let user;
+            try {
+                user = await userService.findOne({ id: jwtPayload.id });
+            } catch (err) {
+                next(null, false);
             }
-            
-            return done(undefined, user);
-            // utils.comparePassword(password, (err: Error, isMatch: boolean) => {
-            //     if (err) { return done(err); }
-            //     if (isMatch) {
-            //         return done(undefined, user);
-            //     }
-            //     return done(undefined, false, { message: "Invalid email or password." });
-            // });
 
-            // return done(undefined, false, { message: "Invalid email or password." });
-        })
-        .catch(err => { return done(err); });
-}));
+            user ? next(null, user) : next(null, false);
+        });
+        passport.use(strategy);
 
+        passport.serializeUser<any, any>((user, next) => {
+            console.log("=============================");
+            console.log(user);
+            next(undefined, user.id);
+        });
 
-/**
- * OAuth Strategy Overview
- *
- * - User is already logged in.
- *   - Check if there is an existing account with a provider id.
- *     - If there is, return an error message. (Account merging not supported)
- *     - Else link new OAuth account with currently logged-in user.
- * - User is not logged in.
- *   - Check if it's a returning user.
- *     - If returning user, sign in and we are done.
- *     - Else check if there is an existing account with user's email.
- *       - If there is, return an error message.
- *       - Else create a new account.
- */
+        passport.deserializeUser(async (id, next) => {
+            let user;
+            try {
+                console.log(id);
+                user = await this.userService.findOne(id);
+            } catch (err) {
+                next(null, false);
+            }
+            user ? next(null, user) : next(null, false);
+        });
 
+        passport.use(new facebookStrategy({
+            clientID: "823733734463471",
+            clientSecret: "e492d9b28db6f1dc11f76113306f311e",
+            callbackURL: "https://localhost:5000/auth/facebook",
+            profileFields: ["name", "email", "link", "locale", "timezone"],
+            passReqToCallback: true
+        }, (req, accessToken, refreshToken, profile, next) => {
+                const userService = new UserService();
+                userService.findOrCreateFacebook(profile).then((user) => {
+                    req.user = user;
+                    user ? next(null, user) : next(new Error("Login facebook fail2112"));
+                }).catch((err) => {console.log(err); next(err); });
+            }
+        ));
 
-/**
- * Sign in with Facebook.
- */
-// passport.use(new FacebookStrategy({
-//     clientID: process.env.FACEBOOK_ID,
-//     clientSecret: process.env.FACEBOOK_SECRET,
-//     callbackURL: "/auth/facebook/callback",
-//     profileFields: ["name", "email", "link", "locale", "timezone"],
-//     passReqToCallback: true
-// }, (req: any, accessToken, refreshToken, profile, done) => {
-//     if (req.user) {
-//         User.findOne({ facebook: profile.id }, (err, existingUser) => {
-//             if (err) { return done(err); }
-//             if (existingUser) {
-//                 req.flash("errors", { msg: "There is already a Facebook account that belongs to you. Sign in with that account or delete it, then link it with your current account." });
-//                 done(err);
-//             } else {
-//                 User.findById(req.user.id, (err, user: any) => {
-//                     if (err) { return done(err); }
-//                     user.facebook = profile.id;
-//                     user.tokens.push({ kind: "facebook", accessToken });
-//                     user.profile.name = user.profile.name || `${profile.name.givenName} ${profile.name.familyName}`;
-//                     user.profile.gender = user.profile.gender || profile._json.gender;
-//                     user.profile.picture = user.profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
-//                     user.save((err: Error) => {
-//                         req.flash("info", { msg: "Facebook account has been linked." });
-//                         done(err, user);
-//                     });
-//                 });
-//             }
-//         });
-//     } else {
-//         User.findOne({ facebook: profile.id }, (err, existingUser) => {
-//             if (err) { return done(err); }
-//             if (existingUser) {
-//                 return done(undefined, existingUser);
-//             }
-//             User.findOne({ email: profile._json.email }, (err, existingEmailUser) => {
-//                 if (err) { return done(err); }
-//                 if (existingEmailUser) {
-//                     req.flash("errors", { msg: "There is already an account using this email address. Sign in to that account and link it with Facebook manually from Account Settings." });
-//                     done(err);
-//                 } else {
-//                     const user: any = new User();
-//                     user.email = profile._json.email;
-//                     user.facebook = profile.id;
-//                     user.tokens.push({ kind: "facebook", accessToken });
-//                     user.profile.name = `${profile.name.givenName} ${profile.name.familyName}`;
-//                     user.profile.gender = profile._json.gender;
-//                     user.profile.picture = `https://graph.facebook.com/${profile.id}/picture?type=large`;
-//                     user.profile.location = (profile._json.location) ? profile._json.location.name : "";
-//                     user.save((err: Error) => {
-//                         done(err, user);
-//                     });
-//                 }
-//             });
-//         });
-//     }
-// }));
+        passport.use(new googleStrategy({
+            clientID: "348835430049-c0djdielndt2kgi667pj1esvfq5ogdtq.apps.googleusercontent.com",
+            clientSecret: "cf86E9dNorD96kWtLk6Tjkfr",
+            callbackURL: "http://localhost:3000/auth/google/"
+        },
+            async (req, accessToken, refreshToken, profile, next) => {
+                const userService = new UserService();
+                let user;
 
-/**
- * Login Required middleware.
- */
-export let isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-    if (req.isAuthenticated()) {
-        return next();
+                try {
+                    user = await userService.findOrCreateGoogle(profile);
+                } catch (err) {
+                    next(err);
+                }
+                req.user = user;
+                user ? next(null, user) : next("Login facebook fail");
+            }
+        ));
+
+        passport.use(new twitterStrategy({
+            consumerKey: "o9djcMxFpO83ckKYncOFG1nDh",
+            consumerSecret: "ThcE4yRMjRrRLyPmXEPxffld54TZ5H77KKZOX2HSHHhTg6wTzo",
+            callbackURL: "http://localhost:3000/auth/twitter/"
+        },
+            async (req, accessToken, refreshToken, profile, next) => {
+                const userService = new UserService();
+                let user;
+                try {
+                    user = await userService.findOrCreateTwitter(profile);
+                } catch (err) {
+                    next(err);
+                }
+                req.user = user;
+                user ? next(null, user) : next(new Error("Login facebook fail"));
+            }
+        ));
     }
-    res.json({
-        success: false,
-        message: "Authenticate fail"
-    });
-};
+
+    /**
+     * Login Required middleware.
+     */
+    public isAuthenticated(req: Request, res: Response, next: NextFunction) {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        res.redirect("/login");
+    }
+
+    /**
+     * Authorization Required middleware.
+     */
+    public isAuthorized(req: Request, res: Response, next: NextFunction) {
+        const provider = req.path.split("/").slice(-1)[0];
+
+        if (_.find(req.user.tokens, { kind: provider })) {
+            next();
+        } else {
+            res.redirect(`/auth/${provider}`);
+        }
+    }
+}

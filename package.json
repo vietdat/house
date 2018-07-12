@@ -1,32 +1,50 @@
 {
-  "name": "MyProject",
+  "name": "Project",
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
-    "ts-node": "3.3.0",
+    "@types/jwt-simple": "^0.5.33",
     "@types/node": "^8.0.29",
-    "typescript": "2.5.2"
+    "@types/passport": "^0.4.5",
+    "@types/request-promise": "^4.1.41",
+    "ts-node": "3.3.0",
+    "tslint": "^5.10.0",
+    "typescript": "^2.5.2"
   },
   "dependencies": {
+    "@types/passport-local": "^1.0.33",
+    "@types/sprintf-js": "^1.1.0",
     "bcrypt": "^2.0.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.1",
+    "class-validator": "^0.8.5",
     "express": "^4.15.4",
+    "express-validator": "^5.2.0",
     "inversify": "^4.13.0",
     "inversify-express-utils": "^6.1.0",
     "jsonwebtoken": "^8.3.0",
+    "jwt-simple": "^0.5.1",
+    "lodash": "^4.17.10",
+    "log4js": "^2.10.0",
+    "moment": "^2.22.2",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
+    "passport-google-oauth": "^1.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4",
     "pg": "^7.4.3",
     "reflect-metadata": "^0.1.10",
     "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "routing-controllers": "^0.7.7",
+    "sprintf-js": "^1.1.1",
     "swagger-express-ts": "^1.0.0",
     "swagger-ui-dist": "^3.17.2",
     "typeorm": "0.2.7"
   },
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "tslint": "tslint --fix -c tslint.json -p tsconfig.json ",
+    "start": "npm run tslint && ts-node src/index.ts"
   }
 }
