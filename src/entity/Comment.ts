@@ -14,26 +14,31 @@ export class Comment {
     })
     public id: string;
 
-    @Column({ nullable: true })
-    @ApiModelProperty({
-        description: ""
-    })
-    public userType: string;
-
-    @Column({ nullable: true })
+    @Column()
     @ApiModelProperty({
         description: "",
         required: true
     })
-    public type: string;
+    public propId: string;
 
-    @Column({
-        nullable: true
+    @Column()
+    @ApiModelProperty({
+        description: "",
+        required: true
     })
+    public propType: PropType;
+
+    @Column()
     @ApiModelProperty({
         description: ""
     })
     public userId: string;
+
+    @Column()
+    @ApiModelProperty({
+        description: ""
+    })
+    public userType: UserType;
 
     @Column({
         nullable: true
@@ -81,4 +86,14 @@ export class Comment {
     private updateTime() {
         this.updatedAt.push(new Date());
     }
+}
+
+enum PropType {
+    Property = "property",
+    Project = "project"
+}
+
+enum UserType {
+    User = "user",
+    Agent = "agent"
 }

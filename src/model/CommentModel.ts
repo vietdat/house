@@ -1,14 +1,26 @@
-import { IsNotEmpty, IsEnum, IsOptional } from "class-validator";
+import { IsNotEmpty, IsEnum, IsOptional, IsNumberString } from "class-validator";
+
+enum PropType {
+    Property = "property",
+    Project = "project"
+}
+
+enum UserType {
+    User = "user",
+    Agent = "agent"
+}
 
 export class CommentModel {
 
     @IsOptional()
+    @IsEnum(PropType)
     public propType: string;
 
     @IsOptional()
     public propId: string;
 
     @IsOptional()
+    @IsEnum(UserType)
     public userType: string;
 
     @IsOptional()
@@ -18,6 +30,7 @@ export class CommentModel {
     public comment: string;
 
     @IsOptional()
+    @IsNumberString()
     public rating: number;
 
     @IsOptional()
