@@ -10,6 +10,7 @@ import { stringify } from "querystring";
 import { PassportConfig } from "../libs/passport";
 import { Utils } from "../libs/utils";
 import { Constant } from "../all/constant";
+import { CallService } from "../service/CallService";
 
 @ApiPath({
     path: "/api/user",
@@ -20,7 +21,7 @@ export class UserController {
     public static TARGET_NAME: string = "UserController - 1";
     private utils = new Utils();
     private userService = new UserService();
-
+    private callService = new CallService();
     @ApiOperationPut({
         description: "Add new user",
         summary: "Add new user",
@@ -139,37 +140,25 @@ export class UserController {
 
     @httpPut("/project")
     public async createProperty(request: Request, response: Response, next: NextFunction) {
-        let property;
-        let url;
-        url = sprintf(Constant.API_CREATE, "project");
-        property = await this.utils.putAPI(url, request.body);
-        return this.utils.createSuccessHandler(property);
+        const data = await this.callService.create("project", request);
+        return this.utils.createSuccessHandler(data);
     }
 
     @httpPost("/:id/project")
     public async updateProperty(request: Request, response: Response, next: NextFunction) {
-        let property;
-        let url;
-        url = sprintf(Constant.API_UPDATE_BY_ID, "project", request.params.id);
-        property = await this.utils.postAPI(url, request.body);
-        return this.utils.createSuccessHandler(property);
+        const data = await this.callService.update("project", request);
+        return this.utils.createSuccessHandler(data);
     }
 
     @httpGet("/project/byid/:id")
     public async findPropertyById(request: Request, response: Response, next: NextFunction) {
-        let property;
-        let url;
-        url = sprintf(Constant.API_GET_BY_ID, "project", request.params.id);
-        property = await this.utils.getAPI(url);
-        return this.utils.createSuccessHandler(property);
+        const data = await this.callService.findById("project", request);
+        return this.utils.createSuccessHandler(data);
     }
 
     @httpGet("/project/search")
     public async searchProperty(request: Request, response: Response, next: NextFunction) {
-        let property;
-        let url;
-        url = sprintf(Constant.API_SEARCH, "project", stringify(request.query));
-        property = await this.utils.getAPI(url);
-        return this.utils.createSuccessHandler(property);
+        const data = await this.callService.search("project", request);
+        return this.utils.createSuccessHandler(data);
     }
 }
