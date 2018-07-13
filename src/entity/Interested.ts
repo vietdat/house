@@ -14,25 +14,31 @@ export class Interested {
     })
     public id: string;
 
-    @Column({ nullable: true })
-    @ApiModelProperty({
-        description: ""
-    })
-    public userId: string;
-
-    @Column({ nullable: true })
+    @Column()
     @ApiModelProperty({
         description: "",
         required: true
     })
     public propId: string;
 
-    @Column({ nullable: true })
+    @Column()
     @ApiModelProperty({
         description: "",
         required: true
     })
-    public type: string;
+    public propType: string;
+
+    @Column()
+    @ApiModelProperty({
+        description: ""
+    })
+    public userId: string;
+
+    @Column()
+    @ApiModelProperty({
+        description: ""
+    })
+    public userType: string;
 
     @Column({
         nullable: true

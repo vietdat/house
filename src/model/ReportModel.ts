@@ -1,15 +1,30 @@
 import { IsNotEmpty, IsEnum, IsOptional } from "class-validator";
 
+enum PropType {
+    Property = "property",
+    Project = "project"
+}
+
+enum UserType {
+    User = "user",
+    Agent = "agent"
+}
+
 export class ReportModel {
 
     @IsOptional()
     public propId: string;
 
     @IsOptional()
+    @IsEnum(PropType)
+    public propType: string;
+
+    @IsOptional()
     public userId: string;
 
     @IsOptional()
-    public type: string;
+    @IsEnum(UserType)
+    public userType: string;
 
     @IsOptional()
     public message: string;
@@ -18,18 +33,22 @@ export class ReportModel {
     public active: string;
 
     constructor(body: {
-        propId: string, userId: string, type: string, message: string, active: string
+        propId: string, propType: string, userId: string, userType: string, type: string, message: string, active: string
     }) {
         if (body.propId) {
             this.propId = body.propId;
+        }
+
+        if (body.propType) {
+            this.propType = body.propType;
         }
 
         if (body.userId) {
             this.userId = body.userId;
         }
 
-        if (body.type) {
-            this.type = body.type;
+        if (body.userType) {
+            this.userType = body.userType;
         }
 
         if (body.message) {

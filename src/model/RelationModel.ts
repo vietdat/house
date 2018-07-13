@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEnum, IsOptional } from "class-validator";
+import { IsNotEmpty, IsEnum, IsOptional, IsBooleanString } from "class-validator";
 
 export class RelationModel {
 
@@ -9,6 +9,7 @@ export class RelationModel {
     public staffId: string;
 
     @IsOptional()
+    @IsBooleanString()
     public active: boolean;
 
     constructor(body: {

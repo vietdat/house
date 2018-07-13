@@ -1,10 +1,12 @@
-import { IsNotEmpty, IsEnum, IsOptional } from "class-validator";
+import { IsNotEmpty, IsEnum, IsOptional, IsBooleanString, IsNumberString } from "class-validator";
 
 export class WalletModel {
     @IsOptional()
+    @IsNumberString()
     public balance: number;
 
     @IsOptional()
+    @IsNumberString()
     public internalMoney: number;
 
     @IsOptional()
@@ -17,6 +19,7 @@ export class WalletModel {
     public paid: [JSON];
 
     @IsOptional()
+    @IsBooleanString()
     public active: boolean;
 
     constructor(body: {

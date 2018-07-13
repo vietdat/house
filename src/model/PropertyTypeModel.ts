@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEnum, IsOptional } from "class-validator";
+import { IsNotEmpty, IsEnum, IsOptional, IsBooleanString, IsArray } from "class-validator";
 
 export class PropertyTypeModel {
 
@@ -9,6 +9,7 @@ export class PropertyTypeModel {
     public category: [string];
 
     @IsOptional()
+    @IsBooleanString()
     public active: boolean;
 
     constructor(body: {
