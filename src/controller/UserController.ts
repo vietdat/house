@@ -6,7 +6,10 @@ import { StatusCode } from "../all/status-code";
 import { Message } from "../all/message";
 import * as passport from "passport";
 import { sprintf } from "sprintf-js";
+import { stringify } from "querystring";
 import { PassportConfig } from "../libs/passport";
+import { Utils } from "../libs/utils";
+import { Constant } from "../all/constant";
 
 @ApiPath({
     path: "/api/user",
@@ -15,7 +18,7 @@ import { PassportConfig } from "../libs/passport";
 @controller("/api/user")
 export class UserController {
     public static TARGET_NAME: string = "UserController - 1";
-
+    private utils = new Utils();
     private userService = new UserService();
 
     @ApiOperationPut({
@@ -79,7 +82,7 @@ export class UserController {
     })
     @httpPost("/:userId/active")
     public async active(request: Request, response: Response, next: NextFunction) {
-        return response.json({ success: true, data: await this.userService.active(request.params.userId)});
+        return response.json({ success: true, data: await this.userService.active(request.params.userId) });
     }
 
     @ApiOperationPost({
@@ -95,7 +98,7 @@ export class UserController {
     })
     @httpPost("/:userId/softdelete")
     public async softdelete(request: Request, response: Response, next: NextFunction) {
-        return response.json({ success: true, data: await this.userService.softdelete(request.params.userId)});
+        return response.json({ success: true, data: await this.userService.softdelete(request.params.userId) });
     }
 
     @ApiOperationPost({
@@ -111,7 +114,7 @@ export class UserController {
     })
     @httpPost("/:userId/update")
     public async update(request: Request, response: Response, next: NextFunction) {
-        return response.json({ success: true, data: await this.userService.update(request.params.userId, request.body)});
+        return response.json({ success: true, data: await this.userService.update(request.params.userId, request.body) });
     }
 
     @ApiOperationGet({
@@ -127,10 +130,46 @@ export class UserController {
     })
     @httpGet("/wallet", passport.authenticate("jwt", { session: false }))
     public async getWallet(request: Request, response: Response, next: NextFunction) {
-        return response.json({ success: true, data: await this.userService.getWallet(request.user.walletId)});
+        return response.json({ success: true, data: await this.userService.getWallet(request.user.walletId) });
     }
 
     public async remove(request: Request, response: Response, next: NextFunction) {
         await this.userService.remove(request.params.id);
+    }
+
+    @httpPut("/project")
+    public async createProperty(request: Request, response: Response, next: NextFunction) {
+        let property;
+        let url;
+        url = sprintf(Constant.API_CREATE, "project");
+        property = await this.utils.putAPI(url, request.body);
+        return this.utils.createSuccessHandler(property);
+    }
+
+    @httpPost("/:id/project")
+    public async updateProperty(request: Request, response: Response, next: NextFunction) {
+        let property;
+        let url;
+        url = sprintf(Constant.API_UPDATE_BY_ID, "project", request.params.id);
+        property = await this.utils.postAPI(url, request.body);
+        return this.utils.createSuccessHandler(property);
+    }
+
+    @httpGet("/project/byid/:id")
+    public async findPropertyById(request: Request, response: Response, next: NextFunction) {
+        let property;
+        let url;
+        url = sprintf(Constant.API_GET_BY_ID, "project", request.params.id);
+        property = await this.utils.getAPI(url);
+        return this.utils.createSuccessHandler(property);
+    }
+
+    @httpGet("/project/search")
+    public async searchProperty(request: Request, response: Response, next: NextFunction) {
+        let property;
+        let url;
+        url = sprintf(Constant.API_SEARCH, "project", stringify(request.query));
+        property = await this.utils.getAPI(url);
+        return this.utils.createSuccessHandler(property);
     }
 }

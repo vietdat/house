@@ -50,7 +50,6 @@ createConnection().then(async () => {
     // tslint:disable-next-line:no-shadowed-variable
     server.setErrorConfig((app: any) => {
         app.use((err: IError, request: express.Request, response: express.Response, next: express.NextFunction) => {
-            console.log(err.err ? err.err : err);
             log.debug(err.err ? err.err : err.toString());
             response.status(err.statusCode ? err.statusCode : 500).send({ success: false, message: err.message ? err.message : "Something fail" });
         });
@@ -59,12 +58,12 @@ createConnection().then(async () => {
     console.log(passport.initialize());
 
     // start express server
-    const options = {
-        key: fs.readFileSync("../../key-20180704-112014.pem"),
-        cert: fs.readFileSync("../../cert-20180704-112014.crt"),
-        requestCert: false,
-        rejectUnauthorized: false
-    };
+    // const options = {
+    //     key: fs.readFileSync("../../key-20180704-112014.pem"),
+    //     cert: fs.readFileSync("../../cert-20180704-112014.crt"),
+    //     requestCert: false,
+    //     rejectUnauthorized: false
+    // };
     // https.createServer(options, app).listen(5000);
     app.listen(5000);
     console.log("Server has started on port 5000.");

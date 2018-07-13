@@ -12,6 +12,13 @@ export class Utils {
         };
     }
 
+    public createSuccessHandler = (data: object): object => {
+        return {
+            success: true,
+            data
+        };
+    }
+
     public generateOTPToken = () => {
         const min = 100000;
         const max = 999999;
@@ -42,7 +49,7 @@ export class Utils {
         };
     }
 
-    public postAPI = async (api, body, token) => {
+    public postAPI = async (api, body, token?) => {
         let result;
         try {
             result = await request({
@@ -63,7 +70,7 @@ export class Utils {
         return result.data;
     }
 
-    public putAPI = async (api, body, token) => {
+    public putAPI = async (api, body, token?) => {
         let result;
         try {
             result = await request({
@@ -80,11 +87,10 @@ export class Utils {
         if (result.error) {
             throw result.error;
         }
-
-        return result.data;
+        return result;
     }
 
-    public getAPI = async (api, token) => {
+    public getAPI = async (api, token?) => {
         let result;
         try {
             result = await request({

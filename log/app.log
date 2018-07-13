@@ -156,3 +156,30 @@
 [2018-07-10T16:31:39.057] [DEBUG] default - syntax error at or near "WHERE"
 [2018-07-10T16:32:09.344] [DEBUG] default - syntax error at or near "WHERE"
 [2018-07-10T16:33:50.654] [DEBUG] default - syntax error at or near "WHERE"
+[2018-07-13T09:22:45.431] [DEBUG] default - StatusCodeError: 404 - "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot PUT /api/api/propject</pre>\n</body>\n</html>\n"
+[2018-07-13T09:23:24.779] [DEBUG] default - StatusCodeError: 404 - "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot PUT /api/api/project</pre>\n</body>\n</html>\n"
+[2018-07-13T09:25:14.941] [DEBUG] default - StatusCodeError: 404 - "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot PUT /api//project</pre>\n</body>\n</html>\n"
+[2018-07-13T09:28:15.451] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property status has failed the following constraints: isEnum \n"}
+[2018-07-13T09:59:40.413] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:00:45.156] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:04:16.286] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:06:01.098] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:06:53.295] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:11:24.796] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:13:22.640] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:13:43.297] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:14:51.394] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isInt \n"}
+[2018-07-13T10:15:16.148] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:16:08.527] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:18:48.710] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isInt \n"}
+[2018-07-13T10:18:53.547] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isInt \n"}
+[2018-07-13T10:19:06.047] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isInt \n"}
+[2018-07-13T10:19:42.353] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isInt \n"}
+[2018-07-13T10:20:09.662] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isNumber \n"}
+[2018-07-13T10:21:10.387] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isNumber \n"}
+[2018-07-13T10:21:23.642] [DEBUG] default - StatusCodeError: 502 - {"success":false,"message":"Cannot find project"}
+[2018-07-13T10:24:56.293] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isInt \n"}
+[2018-07-13T10:30:03.098] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isInt \n"}
+[2018-07-13T10:30:44.979] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isInt \n"}
+[2018-07-13T10:35:01.047] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isNumberString \n"}
+[2018-07-13T10:38:28.380] [DEBUG] default - StatusCodeError: 500 - {"success":false,"message":"validation failed. errors: An instance of ProjectModel has failed the validation:\n - property price has failed the following constraints: isNumberString \n"}
