@@ -104,4 +104,12 @@ export class Utils {
 
         return result.data;
     }
+
+    public createSuccessHandler = (data: object): object => {
+        return {
+            success: true,
+            data
+        };
+    }
+
 }
