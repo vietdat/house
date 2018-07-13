@@ -31,6 +31,10 @@ export class ProjectController {
     @httpGet("/search")
     public async search(request: Request, response: Response, next: NextFunction) {
         const query: ProjectModel = new ProjectModel(request.query);
+        const errors = await validate(query);
+        if (errors.length > 0) {
+            throw new Error("validation failed. errors: " + errors);
+        }
         const data = this.utils.createSuccessResponse(await this.projectService.search(query));
         return data;
     }

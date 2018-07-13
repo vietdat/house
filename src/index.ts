@@ -68,7 +68,7 @@ createConnection().then(async () => {
     // tslint:disable-next-line:no-shadowed-variable
     server.setErrorConfig((app: any) => {
         app.use((err: IError, request: express.Request, response: express.Response, next: express.NextFunction) => {
-            log.debug(err ? err.message : err.toString());
+            log.debug(err ? err.err : err.toString());
             response.status(err.statusCode ? err.statusCode : 500).send({ success: false, message: err.message ? err.message : "Something fail" });
         });
     });

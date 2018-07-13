@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEnum, IsOptional } from "class-validator";
+import { IsEnum, IsOptional, IsInt, IsBoolean, IsNumber, IsNumberString, IsBooleanString, IsDateString } from "class-validator";
 
 enum Status {
     New = "new",
@@ -27,42 +27,51 @@ export class ProjectModel {
     public area: string;
 
     @IsOptional()
-    public price: number;
+    @IsNumberString()
+    public price: string;
 
     @IsOptional()
+    @IsNumberString()
     public commission: number;
 
     @IsOptional()
+    @IsNumberString()
     public promotion: number;
 
     @IsOptional()
     public introduce: string;
 
     @IsOptional()
+    @IsNumberString()
     public bedroom: number;
 
     @IsOptional()
+    @IsNumberString()
     public bathroom: number;
 
     @IsOptional()
     public direction: string;
 
     @IsOptional()
+    @IsBooleanString()
     public isOwner: boolean;
 
     @IsOptional()
     public ownerId: string;
 
     @IsOptional()
+    @IsBooleanString()
     public active: boolean;
 
     @IsOptional()
     public place: string;
 
     @IsOptional()
+    @IsDateString()
     public from: Date;
 
     @IsOptional()
+    @IsDateString()
     public to: Date;
 
     @IsOptional()
@@ -70,6 +79,7 @@ export class ProjectModel {
     public status: Status;
 
     @IsOptional()
+    @IsNumberString()
     public totalProperty: number;
 
     @IsOptional()
@@ -91,7 +101,7 @@ export class ProjectModel {
     public designImages: [JSON];
 
     constructor(body: {
-        name: string, address: JSON, properties: JSON, postCode: string, area: string, price: number, commission: number,
+        name: string, address: JSON, properties: JSON, postCode: string, area: string, price: string, commission: number,
         promotion: number, introduce: string, bedroom: number, bathroom: number, direction: string,
         isOwner: boolean, ownerId: string, active: boolean, place: string, from: Date, to: Date, status: Status,
         totalProperty: number, videos: [JSON], utilityImages: [JSON], documents: [JSON], designImages: [JSON]
