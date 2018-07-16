@@ -5,11 +5,11 @@ import * as passportTwitter from "passport-twitter";
 import * as passportGoogle from "passport-google-oauth";
 import * as _ from "lodash";
 import * as passportJWT from "passport-jwt";
-import { UserService } from "../service/UserService";
+import { AgentService } from "../service/AgentService";
 import { Request, Response, NextFunction } from "express";
 
 export class PassportConfig {
-    private userService = new UserService();
+    private agentService = new AgentService();
 
     public init() {
         const localStrategy = passportLocal.Strategy;
@@ -25,34 +25,34 @@ export class PassportConfig {
         };
 
         const strategy = new jwtStrategy(jwtOptions, async (jwtPayload, next) => {
-            const userService = new UserService();
+            const agentService = new AgentService();
             // console.log("payload received", jwtPayload);
-            let user;
+            let agent;
             try {
-                user = await userService.findOne({ id: jwtPayload.id });
+                agent = await agentService.findOne({ id: jwtPayload.id });
             } catch (err) {
                 next(null, false);
             }
 
-            user ? next(null, user) : next(null, false);
+            agent ? next(null, agent) : next(null, false);
         });
         passport.use(strategy);
 
-        passport.serializeUser<any, any>((user, next) => {
+        passport.serializeUser<any, any>((agent, next) => {
             console.log("=============================");
-            console.log(user);
-            next(undefined, user.id);
+            console.log(agent);
+            next(undefined, agent.id);
         });
 
         passport.deserializeUser(async (id, next) => {
-            let user;
+            let agent;
             try {
                 console.log(id);
-                user = await this.userService.findOne(id);
+                agent = await this.agentService.findOne(id);
             } catch (err) {
                 next(null, false);
             }
-            user ? next(null, user) : next(null, false);
+            agent ? next(null, agent) : next(null, false);
         });
 
         passport.use(new facebookStrategy({
@@ -62,30 +62,30 @@ export class PassportConfig {
             profileFields: ["name", "email", "link", "locale", "timezone"],
             passReqToCallback: true
         }, (req, accessToken, refreshToken, profile, next) => {
-                const userService = new UserService();
-                userService.findOrCreateFacebook(profile).then((user) => {
-                    req.user = user;
-                    user ? next(null, user) : next(new Error("Login facebook fail2112"));
+                const agentService = new AgentService();
+                agentService.findOrCreateFacebook(profile).then((agent) => {
+                    req.agent = agent;
+                    agent ? next(null, agent) : next(new Error("Login facebook fail2112"));
                 }).catch((err) => {console.log(err); next(err); });
             }
         ));
 
         passport.use(new googleStrategy({
-            clientID: "348835430049-c0djdielndt2kgi667pj1esvfq5ogdtq.apps.googleusercontent.com",
+            clientID: "348835430049-c0djdielndt2kgi667pj1esvfq5ogdtq.apps.googleagentcontent.com",
             clientSecret: "cf86E9dNorD96kWtLk6Tjkfr",
             callbackURL: "http://localhost:3000/auth/google/"
         },
             async (req, accessToken, refreshToken, profile, next) => {
-                const userService = new UserService();
-                let user;
+                const agentService = new AgentService();
+                let agent;
 
                 try {
-                    user = await userService.findOrCreateGoogle(profile);
+                    agent = await agentService.findOrCreateGoogle(profile);
                 } catch (err) {
                     next(err);
                 }
-                req.user = user;
-                user ? next(null, user) : next("Login facebook fail");
+                req.agent = agent;
+                agent ? next(null, agent) : next("Login facebook fail");
             }
         ));
 
@@ -95,15 +95,15 @@ export class PassportConfig {
             callbackURL: "http://localhost:3000/auth/twitter/"
         },
             async (req, accessToken, refreshToken, profile, next) => {
-                const userService = new UserService();
-                let user;
+                const agentService = new AgentService();
+                let agent;
                 try {
-                    user = await userService.findOrCreateTwitter(profile);
+                    agent = await agentService.findOrCreateTwitter(profile);
                 } catch (err) {
                     next(err);
                 }
-                req.user = user;
-                user ? next(null, user) : next(new Error("Login facebook fail"));
+                req.agent = agent;
+                agent ? next(null, agent) : next(new Error("Login facebook fail"));
             }
         ));
     }
