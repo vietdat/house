@@ -1,5 +1,5 @@
 import { getRepository, Repository } from "typeorm";
-import { User } from "../entity/User";
+import { Staff } from "../entity/Staff";
 import { sprintf } from "sprintf-js";
 import * as jwt from "jwt-simple";
 import * as passport from "passport";
@@ -15,8 +15,8 @@ import { CheckToken, ResendToken, CheckPhoneExistModel, ForgotPasswordModel, Upd
 import { validate } from "class-validator";
 
 export class AuthService {
-    private userRepository: Repository<User> = getRepository(User);
-    private user = new User();
+    private staffRepository: Repository<Staff> = getRepository(Staff);
+    private staff = new Staff();
     private _utils = new Utils();
     private _authenticate = new Authenticate();
 
@@ -29,28 +29,28 @@ export class AuthService {
 
     public async login(phoneNumber, password): Promise<object> {
         try {
-            const user = await this.userRepository.findOne({ phoneNumber });
+            const staff = await this.staffRepository.findOne({ phoneNumber });
 
-            if (user === null) {
-                throw new Error("User not found");
+            if (staff === null) {
+                throw new Error("Staff not found");
             }
 
-            const success = await encryptionService.compare(password, user.password);
+            const success = await encryptionService.compare(password, staff.password);
             if (success === false) {
                 throw new Error(Message.PASSWORD_INCORRECT);
             }
 
-            if (!user.active) {
-                throw new Error(sprintf(Message.NOT_ACTIVE, user));
+            if (!staff.active) {
+                throw new Error(sprintf(Message.NOT_ACTIVE, staff));
             }
-            return this.genToken(user);
+            return this.genToken(staff);
         } catch (err) {
             throw err;
         }
     }
 
     public async forgotpassword(phoneNumber): Promise<boolean> {
-        let user: User;
+        let staff: Staff;
 
         const params = new ForgotPasswordModel(phoneNumber);
         const errors = await validate(params);
@@ -59,38 +59,38 @@ export class AuthService {
         }
 
         try {
-            user = await this.userRepository.findOne({ phoneNumber });
+            staff = await this.staffRepository.findOne({ phoneNumber });
         } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user"), err });
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "staff"), err });
         }
 
         const internalToken: string = await this._authenticate.createInternalToken();
 
-        if (!user) {
-            throw new Error("User not found");
+        if (!staff) {
+            throw new Error("Staff not found");
         }
 
-        user.password = this._utils.generateOTPToken().toString();
+        staff.password = this._utils.generateOTPToken().toString();
 
-        let updateData: User;
-        updateData = await this.userRepository.create(user);
+        let updateData: Staff;
+        updateData = await this.staffRepository.create(staff);
         // Update password
         try {
-            await this.userRepository.save(updateData);
+            await this.staffRepository.save(updateData);
         } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "user"), err });
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "staff"), err });
         }
 
         // Send new password to phone
-        const content = "Password moi cua ban la: " + user.password;
+        const content = "Password moi cua ban la: " + staff.password;
         console.log(content);
-        // this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: user.phoneNumber, content }, internalToken);
+        // this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: staff.phoneNumber, content }, internalToken);
 
         return true;
     }
 
     public async updatepassword(phoneNumber, newPassword, oldPassword): Promise<boolean> {
-        let user: User;
+        let staff: Staff;
 
         const params = new UpdatePasswordModel(phoneNumber, newPassword, oldPassword);
         const errors = await validate(params);
@@ -99,42 +99,42 @@ export class AuthService {
         }
 
         try {
-            user = await this.userRepository.findOne({ phoneNumber });
+            staff = await this.staffRepository.findOne({ phoneNumber });
         } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user"), err });
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "staff"), err });
         }
 
         const internalToken: string = await this._authenticate.createInternalToken();
 
-        if (!user) {
-            throw new Error("User not found");
+        if (!staff) {
+            throw new Error("Staff not found");
         }
 
-        const success = await encryptionService.compare(oldPassword, user.password);
+        const success = await encryptionService.compare(oldPassword, staff.password);
         if (success === false) {
             throw new Error(Message.PASSWORD_INCORRECT);
         }
 
-        let updateData: User;
-        user.password = newPassword;
-        updateData = await this.userRepository.create(user);
+        let updateData: Staff;
+        staff.password = newPassword;
+        updateData = await this.staffRepository.create(staff);
 
         // Update password
         try {
-            await this.userRepository.save(updateData);
+            await this.staffRepository.save(updateData);
         } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "user"), err });
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "staff"), err });
         }
 
         // Send new password to phone
-        const content = "Password moi cua ban la: " + user.password;
-        this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: user.phoneNumber, content }, internalToken);
+        const content = "Password moi cua ban la: " + staff.password;
+        this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: staff.phoneNumber, content }, internalToken);
 
         return true;
     }
 
     public async checkPhoneExist(phoneNumber): Promise<boolean> {
-        let user: User;
+        let staff: Staff;
 
         const params = new CheckPhoneExistModel(phoneNumber);
         const errors = await validate(params);
@@ -143,12 +143,12 @@ export class AuthService {
         }
 
         try {
-            user = await this.userRepository.findOne({ phoneNumber });
+            staff = await this.staffRepository.findOne({ phoneNumber });
         } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user"), err });
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "staff"), err });
         }
 
-        if (!user) {
+        if (!staff) {
             return false;
         }
 
@@ -156,7 +156,7 @@ export class AuthService {
     }
 
     public async checkOtpToken(phoneNumber, otpToken): Promise<boolean> {
-        let user: User;
+        let staff: Staff;
         const data = new CheckToken(phoneNumber, otpToken);
         const errors = await validate(data);
         if (errors.length > 0) {
@@ -164,17 +164,17 @@ export class AuthService {
         }
 
         try {
-            user = await this.userRepository.findOne({ phoneNumber, otpToken });
+            staff = await this.staffRepository.findOne({ phoneNumber, otpToken });
         } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user") });
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "staff") });
         }
 
-        user.active = true;
-        if (user) {
+        staff.active = true;
+        if (staff) {
             try {
-                await this.userRepository.update(user.id, user);
+                await this.staffRepository.update(staff.id, staff);
             } catch (err) {
-                throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "user") });
+                throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_UPDATE, "staff") });
             }
         }
 
@@ -182,7 +182,7 @@ export class AuthService {
     }
 
     public async resendOtp(phoneNumber): Promise<boolean> {
-        let user: User;
+        let staff: Staff;
 
         const data = new ResendToken(phoneNumber);
         const errors = await validate(data);
@@ -191,36 +191,36 @@ export class AuthService {
         }
 
         try {
-            user = await this.userRepository.findOne({ phoneNumber });
+            staff = await this.staffRepository.findOne({ phoneNumber });
         } catch (err) {
-            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "user") });
+            throw ({ statusCode: StatusCode.BAD_GATEWAY, message: sprintf(Message.CANNOT_FIND, "staff") });
         }
 
-        const content = "Opt token cua ban la: " + user.otpToken;
-        this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: user.phoneNumber, content }, await this._authenticate.createInternalToken());
+        const content = "Opt token cua ban la: " + staff.otpToken;
+        this._utils.postAPI(Constant.sendSmsApi, { phoneNumber: staff.phoneNumber, content }, await this._authenticate.createInternalToken());
 
         return true;
     }
 
-    public async loginFacebook(user): Promise<object> {
+    public async loginFacebook(staff): Promise<object> {
         try {
-            return this.genToken(user);
+            return this.genToken(staff);
         } catch (err) {
             throw err;
         }
     }
 
-    public async loginGoogle(user): Promise<object> {
+    public async loginGoogle(staff): Promise<object> {
         try {
-            return this.genToken(user);
+            return this.genToken(staff);
         } catch (err) {
             throw err;
         }
     }
 
-    public async loginTwitter(user): Promise<object> {
+    public async loginTwitter(staff): Promise<object> {
         try {
-            return this.genToken(user);
+            return this.genToken(staff);
         } catch (err) {
             throw err;
         }
@@ -234,31 +234,31 @@ export class AuthService {
         };
 
         return new Strategy(params, async (req, payload: any, next) => {
-            let user;
+            let staff;
             try {
-                user = await this.userRepository.findOne({ email: payload.email });
+                staff = await this.staffRepository.findOne({ email: payload.email });
             } catch (err) {
                 return next(err);
             }
-            if (user === null) {
-                return next(null, false, { message: "The user in the token was not found" });
+            if (staff === null) {
+                return next(null, false, { message: "The staff in the token was not found" });
             }
 
-            return next(null, { id: user.id, email: user.email });
+            return next(null, { id: staff.id, email: staff.email });
         });
     }
 
-    private genToken = (user: User): object => {
+    private genToken = (staff: Staff): object => {
         const expires = moment().utc().add({ days: 7 }).unix();
         const token = jwt.encode({
             exp: expires,
-            id: user.id
+            id: staff.id
         }, "Fami@123");
 
         return {
             token: "JWT " + token,
             expires: moment.unix(expires).format(),
-            user: user.id
+            staff: staff.id
         };
     }
 }

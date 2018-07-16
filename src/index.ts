@@ -5,7 +5,7 @@ import * as bodyParser from "body-parser";
 import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
 
-import { UserController } from "./controller/UserController";
+import { StaffController } from "./controller/StaffController";
 import { Auth } from "./controller/AuthController";
 
 import * as passport from "passport";
@@ -23,7 +23,7 @@ createConnection().then(async () => {
     const log: Log = new Log();
     passportC.init();
     container.bind<interfaces.Controller>(TYPE.Controller)
-        .to(UserController).inSingletonScope().whenTargetNamed(UserController.TARGET_NAME);
+        .to(StaffController).inSingletonScope().whenTargetNamed(StaffController.TARGET_NAME);
     container.bind<interfaces.Controller>(TYPE.Controller)
         .to(Auth).inSingletonScope().whenTargetNamed("auth");
     // create server

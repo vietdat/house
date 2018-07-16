@@ -4,7 +4,7 @@ import { controller, httpPost, httpGet } from "inversify-express-utils";
 import { AuthService } from "../service/AuthService";
 import { PassportConfig } from "../libs/passport";
 
-@controller("/api/user/auth")
+@controller("/api/staff/auth")
 export class Auth {
     private authService = new AuthService();
     private passportConf = new PassportConfig();
@@ -64,16 +64,16 @@ export class Auth {
 
     @httpGet("/facebook", passport.authenticate("facebook"))
     public async loginFacebook(request, response: Response, next: NextFunction) {
-        response.status(200).json(this.authService.loginFacebook(request.user));
+        response.status(200).json(this.authService.loginFacebook(request.staff));
     }
 
     @httpGet("/google", passport.authenticate("google"))
     public async loginGoogle(request, response: Response, next: NextFunction) {
-        response.status(200).json(this.authService.loginGoogle(request.user));
+        response.status(200).json(this.authService.loginGoogle(request.staff));
     }
 
     @httpGet("/twitter", passport.authenticate("twitter"))
     public async loginTwitter(request, response: Response, next: NextFunction) {
-        response.status(200).json(this.authService.loginTwitter(request.user));
+        response.status(200).json(this.authService.loginTwitter(request.staff));
     }
 }
