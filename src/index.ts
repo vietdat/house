@@ -4,18 +4,13 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as swagger from "swagger-express-ts";
 import { Container } from "inversify";
-
 import { UserController } from "./controller/UserController";
 import { Auth } from "./controller/AuthController";
-
 import * as passport from "passport";
 import { interfaces, InversifyExpressServer, TYPE } from "inversify-express-utils";
 import { IError } from "./libs/error";
 import { PassportConfig } from "./libs/passport";
 import { Log } from "./libs/log";
-
-import * as https from "https";
-import * as fs from "fs";
 
 createConnection().then(async () => {
     const container = new Container();
@@ -44,6 +39,13 @@ createConnection().then(async () => {
                 }
             }
         }));
+        app.all("*", (req, res, next) => {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+            res.header("Content-Type", "application/json;charset=utf-8");
+            next();
+          });
         app.use(passport.initialize());
         app.use(passport.session());
     });
@@ -55,16 +57,7 @@ createConnection().then(async () => {
         });
     });
     const app = server.build();
-    console.log(passport.initialize());
 
-    // start express server
-    // const options = {
-    //     key: fs.readFileSync("../../key-20180704-112014.pem"),
-    //     cert: fs.readFileSync("../../cert-20180704-112014.crt"),
-    //     requestCert: false,
-    //     rejectUnauthorized: false
-    // };
-    // https.createServer(options, app).listen(5000);
     app.listen(5000);
     console.log("Server has started on port 5000.");
 }).catch((error) => console.log(error));
