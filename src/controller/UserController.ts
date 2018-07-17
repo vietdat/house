@@ -156,7 +156,7 @@ export class UserController {
      *
      * @apiSuccess {Json} success:true
      */
-    @httpGet("/comment/byid/:id")
+    @httpGet("/comment/byid/:id", passport.authenticate("jwt", { session: false }))
     public async findCommentById(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.findById("comment", request);
         return data;
@@ -171,67 +171,286 @@ export class UserController {
      *
      * @apiSuccess {Json} success:true
      */
-    @httpGet("/comment/search")
+    @httpGet("/comment/search", passport.authenticate("jwt", { session: false }))
     public async searchComment(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.search("comment", request);
         return data;
     }
 
-    @httpPut("/project")
+    /**
+     * @api{put} /api/user/project Create project
+     * @apiName CreateProject
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} address address
+     * @apiParam {Json} properties properties
+     * @apiParam {String} postCode postCode
+     * @apiParam {String} price price
+     * @apiParam {Number} commission commission
+     * @apiParam {String} promotion promotion
+     * @apiParam {Number} bedroom bedroom
+     * @apiParam {Number} bathroom bathroom
+     * @apiParam {String} direction direction
+     * @apiParam {Boolean} isOwner isOwner
+     * @apiParam {String} ownerId ownerId
+     * @apiParam {String} place place
+     * @apiParam {Date} from from
+     * @apiParam {Date} to to
+     * @apiParam {String} status status
+     * @apiParam {Number} totalProperty totalProperty
+     * @apiParam {[Json]} videos videos
+     * @apiParam {[Json]} utilityImages utilityImages
+     * @apiParam {[Json]} utilityNames utilityNames
+     * @apiParam {[JSON]} documents documents
+     * @apiParam {[JSON]} designImages designImages
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPut("/project", passport.authenticate("jwt", { session: false }))
     public async createProject(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.create("project", request);
         return data;
     }
 
-    @httpPost("/:id/project")
+    /**
+     * @api{post} /api/user/:id/project Update project
+     * @apiName UpdateProject
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} address address
+     * @apiParam {Json} properties properties
+     * @apiParam {String} postCode postCode
+     * @apiParam {String} price price
+     * @apiParam {Number} commission commission
+     * @apiParam {String} promotion promotion
+     * @apiParam {Number} bedroom bedroom
+     * @apiParam {Number} bathroom bathroom
+     * @apiParam {String} direction direction
+     * @apiParam {Boolean} isOwner isOwner
+     * @apiParam {String} ownerId ownerId
+     * @apiParam {String} place place
+     * @apiParam {Date} from from
+     * @apiParam {Date} to to
+     * @apiParam {String} status status
+     * @apiParam {Number} totalProperty totalProperty
+     * @apiParam {[Json]} videos videos
+     * @apiParam {[Json]} utilityImages utilityImages
+     * @apiParam {[Json]} utilityNames utilityNames
+     * @apiParam {[JSON]} documents documents
+     * @apiParam {[JSON]} designImages designImages
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPost("/:id/project", passport.authenticate("jwt", { session: false }))
     public async updateProject(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.update("project", request);
         return data;
     }
 
+    /**
+     * @api{get} /api/user/project/byid/:id Find project by id
+     * @apiName FindProjectById
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:Project
+     */
     @httpGet("/project/byid/:id")
     public async findProjectById(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.findById("project", request);
         return data;
     }
 
+    /**
+     * @api{get} /api/user/project/search Find project by id
+     * @apiName FindProjectById
+     * @apiGroup User
+     *
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:[Project]
+     */
     @httpGet("/project/search")
     public async searchProject(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.search("project", request);
         return data;
     }
 
-    @httpPut("/property")
+    /**
+     * @api{put} /api/user/property Create property
+     * @apiName Createproperty
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} address address
+     * @apiParam {Json} properties properties
+     * @apiParam {String} postCode postCode
+     * @apiParam {String} price price
+     * @apiParam {Number} commission commission
+     * @apiParam {String} promotion promotion
+     * @apiParam {String} introduce introduce
+     * @apiParam {Number} bedroom bedroom
+     * @apiParam {Number} bathroom bathroom
+     *  @apiParam {Number} direction direction
+     * @apiParam {String} direction direction
+     * @apiParam {Boolean} isOwner isOwner
+     * @apiParam {String} ownerId ownerId
+     * @apiParam {String} place place
+     * @apiParam {Date} from from
+     * @apiParam {Date} to to
+     * @apiParam {String} status status
+     * @apiParam {Number} totalProperty totalProperty
+     * @apiParam {[Json]} videos videos
+     * @apiParam {[Json]} utilityImages utilityImages
+     * @apiParam {[Json]} utilityNames utilityNames
+     * @apiParam {[JSON]} documents documents
+     * @apiParam {[JSON]} designImages designImages
+     * @apiParam {String} designImages projectId
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPut("/property", passport.authenticate("jwt", { session: false }))
     public async createProperty(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.create("property", request);
         return data;
     }
 
-    @httpPost("/:id/property")
+    /**
+     * @api{post} /api/user/property Update property
+     * @apiName UpdateProperty
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} address address
+     * @apiParam {Json} properties properties
+     * @apiParam {String} postCode postCode
+     * @apiParam {String} price price
+     * @apiParam {Number} commission commission
+     * @apiParam {String} promotion promotion
+     * @apiParam {String} introduce introduce
+     * @apiParam {Number} bedroom bedroom
+     * @apiParam {Number} bathroom bathroom
+     *  @apiParam {Number} direction direction
+     * @apiParam {String} direction direction
+     * @apiParam {Boolean} isOwner isOwner
+     * @apiParam {String} ownerId ownerId
+     * @apiParam {String} place place
+     * @apiParam {Date} from from
+     * @apiParam {Date} to to
+     * @apiParam {String} status status
+     * @apiParam {Number} totalProperty totalProperty
+     * @apiParam {[Json]} videos videos
+     * @apiParam {[Json]} utilityImages utilityImages
+     * @apiParam {[Json]} utilityNames utilityNames
+     * @apiParam {[JSON]} documents documents
+     * @apiParam {[JSON]} designImages designImages
+     * @apiParam {String} designImages projectId
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPost("/:id/property", passport.authenticate("jwt", { session: false }))
     public async updateProperty(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.update("property", request);
         return data;
     }
 
+    /**
+     * @api{get} /api/user/property/byid/:id Find property by id
+     * @apiName FindPropertyById
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:property
+     */
     @httpGet("/property/byid/:id")
     public async findPropertyById(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.findById("property", request);
         return data;
     }
 
+    /**
+     * @api{get} /api/user/property/search Find property by id
+     * @apiName FindPropertyById
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:[property]
+     */
     @httpGet("/property/search")
     public async searchProperty(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.search("property", request);
         return data;
     }
 
-    @httpPut("/interested")
+    /**
+     * @api{get} /api/user/agent/byid/:id Find agent by id
+     * @apiName FindAgentById
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:Agent
+     */
+    @httpGet("/agent/byid/:id")
+    public async findAgentById(request: Request, response: Response, next: NextFunction) {
+        const data = await this.callService.findById("agent", request);
+        return data;
+    }
+
+    /**
+     * @api{get} /api/user/agent/search Find agent by id
+     * @apiName FindAgentById
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:[Agent]
+     */
+    @httpGet("/agent/search")
+    public async searchAgent(request: Request, response: Response, next: NextFunction) {
+        const data = await this.callService.search("agent", request);
+        return data;
+    }
+
+    /**
+     * @api{put} /api/user/interested Interested project and peoperty
+     * @apiName Interested
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} propId propId
+     * @apiParam {String} propType propType
+     * @apiParam {String} userId userId
+     * @apiParam {String} userType userType
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPut("/interested", passport.authenticate("jwt", { session: false }))
     public async createInterested(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.create("interested", request);
         return data;
     }
 
-    @httpPost("/:id/interested")
+    /**
+     * @api{post} /api/user/project Update interested
+     * @apiName UpdateInterested
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} propId propId
+     * @apiParam {String} propType propType
+     * @apiParam {String} userId userId
+     * @apiParam {String} userType userType
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPost("/:id/interested", passport.authenticate("jwt", { session: false }))
     public async updateInterested(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.update("interested", request);
         return data;
@@ -243,105 +462,173 @@ export class UserController {
         return data;
     }
 
+    /**
+     * @api{get} /api/user/interested/search search interested of property and project
+     * @apiName SearchInterested
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:[interested]
+     */
     @httpGet("/interested/search")
     public async searchInterested(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.search("interested", request);
         return data;
     }
 
-    @httpPut("/propertytype")
-    public async createPropertytype(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.create("propertytype", request);
+    /**
+     * @api{put} /api/user/transaction Create transaction
+     * @apiName transaction
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} salerId salerId
+     * @apiParam {String} salerType salerType
+     * @apiParam {String} buyerId buyerId
+     * @apiParam {String} buyerType buyerType
+     * @apiParam {String} propertyId propertyId
+     * @apiParam {String} status status
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPut("/transaction", passport.authenticate("jwt", { session: false }))
+    public async createTransaction(request: Request, response: Response, next: NextFunction) {
+        const data = await this.callService.create("transaction", request);
         return data;
     }
 
-    @httpPost("/:id/propertytype")
-    public async updatePropertytype(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.update("propertytype", request);
+    /**
+     * @api{post} /api/user/:id/transaction Update transaction
+     * @apiName transaction
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} salerId salerId
+     * @apiParam {String} salerType salerType
+     * @apiParam {String} buyerId buyerId
+     * @apiParam {String} buyerType buyerType
+     * @apiParam {String} propertyId propertyId
+     * @apiParam {String} status status
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPost("/:id/transaction", passport.authenticate("jwt", { session: false }))
+    public async updateTransaction(request: Request, response: Response, next: NextFunction) {
+        const data = await this.callService.update("transaction", request);
         return data;
     }
 
-    @httpGet("/propertytype/byid/:id")
-    public async findPropertytypeById(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.findById("propertytype", request);
+    /**
+     * @api{get} /api/user/transaction/byid/:id Find transaction by id
+     * @apiName FindTransactionById
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:transaction
+     */
+    @httpGet("/transaction/byid/:id", passport.authenticate("jwt", { session: false }))
+    public async findTransactionById(request: Request, response: Response, next: NextFunction) {
+        const data = await this.callService.findById("transaction", request);
         return data;
     }
 
-    @httpGet("/propertytype/search")
-    public async searchPropertytype(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.search("propertytype", request);
+    /**
+     * @api{get} /api/user/transaction/search  search transaction
+     * @apiName SearchTransaction
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:[transaction]
+     */
+    @httpGet("/transaction/search", passport.authenticate("jwt", { session: false }))
+    public async searchTransaction(request: Request, response: Response, next: NextFunction) {
+        const data = await this.callService.search("transaction", request);
         return data;
     }
 
-    @httpPut("/relation")
-    public async createRelation(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.create("relation", request);
+    /**
+     * @api{get} /api/user/staff/search  search staff
+     * @apiName Searchstaff
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:[staff]
+     */
+    @httpGet("/staff/search")
+    public async searchStaff(request: Request, response: Response, next: NextFunction) {
+        const data = await this.callService.search("staff", request);
         return data;
     }
 
-    @httpPost("/:id/relation")
-    public async updateRelation(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.update("relation", request);
-        return data;
-    }
-
-    @httpGet("/relation/byid/:id")
-    public async findRelationById(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.findById("relation", request);
-        return data;
-    }
-
-    @httpGet("/relation/search")
-    public async searchRelation(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.search("relation", request);
-        return data;
-    }
-
-    @httpPut("/report")
+    /**
+     * @api{put} /api/user/report Create report
+     * @apiName Createreport
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} propId propId
+     * @apiParam {String} propType propType
+     * @apiParam {String} userId userId
+     * @apiParam {String} userType userType
+     * @apiParam {String} message message
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPut("/report", passport.authenticate("jwt", { session: false }))
     public async createReport(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.create("report", request);
         return data;
     }
 
-    @httpPost("/:id/report")
+    /**
+     * @api{post} /api/user/:id/report Update report
+     * @apiName Updatereport
+     * @apiGroup User
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {Json} propId propId
+     * @apiParam {String} propType propType
+     * @apiParam {String} userId userId
+     * @apiParam {String} userType userType
+     * @apiParam {String} message message
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPost("/:id/report", passport.authenticate("jwt", { session: false }))
     public async updateReport(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.update("report", request);
         return data;
     }
 
+    /**
+     * @api{get} /api/user/report/byid/:id Get report by id
+     * @apiName GetreportById
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:report
+     */
     @httpGet("/report/byid/:id")
     public async findReportById(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.findById("report", request);
         return data;
     }
 
+    /**
+     * @api{get} /api/user/report/search Search report
+     * @apiName Searchreport
+     * @apiGroup User
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:[report]
+     */
     @httpGet("/report/search")
     public async searchReport(request: Request, response: Response, next: NextFunction) {
         const data = await this.callService.search("report", request);
-        return data;
-    }
-
-    @httpPut("/transaction")
-    public async createTransaction(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.create("transaction", request);
-        return data;
-    }
-
-    @httpPost("/:id/transaction")
-    public async updateTransaction(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.update("transaction", request);
-        return data;
-    }
-
-    @httpGet("/transaction/byid/:id")
-    public async findTransactionById(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.findById("transaction", request);
-        return data;
-    }
-
-    @httpGet("/transaction/search")
-    public async searchTransaction(request: Request, response: Response, next: NextFunction) {
-        const data = await this.callService.search("transaction", request);
         return data;
     }
 }

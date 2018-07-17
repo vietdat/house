@@ -16,44 +16,123 @@ export class Auth {
 
     public authenticate = (callback) => passport.authenticate("jwt", { session: false, failWithError: true }, callback);
 
+    /**
+     * @api{post} /api/user/auth/login Login
+     * @apiName Login
+     * @apiGroup Auth
+     *
+     * @apiParam {String} phoneNumber phone number
+     * @apiParam {String} password password
+     *
+     * @apiSuccess {Json} success:true
+     * @apiSuccess {Json} data:token
+     */
     @httpPost("/login")
     public async login(request: Request, response: Response, next: NextFunction) {
         const token = await this.authService.login(request.body.phoneNumber, request.body.password);
         response.status(200).json({success: true, data: token});
     }
 
+    /**
+     * @api{post} /api/user/auth/forgotpassword Forgotpassword
+     * @apiName Forgotpassword
+     * @apiGroup Auth
+     *
+     *  @apiParam {String} phoneNumber phoneNumber
+     * @apiSuccess {Json} success:true
+     */
     @httpPost("/forgotpassword")
     public async forgotpassword(request: Request, response: Response, next: NextFunction) {
         const token = await this.authService.forgotpassword(request.body.phoneNumber);
         response.status(200).json({success: true});
     }
 
+    /**
+     * @api{post} /api/user/auth/updatepassword Update password
+     * @apiName updatepassword
+     * @apiGroup Auth
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiParam {String} phoneNumber phoneNumber
+     * @apiParam {String} newPassword newPassword
+     * @apiParam {String} oldPassword oldPassword
+     *
+     * @apiSuccess {Json} success:true
+     */
     @httpPost("/updatepassword", passport.authenticate("jwt", { session: false }))
     public async updatepassword(request: Request, response: Response, next: NextFunction) {
         const token = await this.authService.updatepassword(request.body.phoneNumber, request.body.newPassword, request.body.oldPassword);
         response.status(200).json({success: true});
     }
 
+    /**
+     * @api{post} /api/user/auth/:phoneNumber/exist Check phone exist
+     * @apiName CheckPhoneExist
+     * @apiGroup Auth
+     *
+     * @apiSuccess {Json} success:true
+     */
     @httpPost("/:phoneNumber/exist")
     public async checkPhoneExist(request: Request, response: Response, next: NextFunction) {
         const result = await this.authService.checkPhoneExist(request.params.phoneNumber);
-        response.status(200).json({success: true, data: result});
+        return result;
     }
 
+    /**
+     * @api{post} /api/user/auth/otpToken/:otpToken checkOtpToken
+     * @apiName CheckPhoneExist
+     * @apiGroup Auth
+     *
+     * @apiParam {String} phoneNumber phoneNumber
+     * @apiParam {String} otpToken otpToken
+     *
+     * @apiSuccess {Json} success:true
+     */
     @httpPost("/otpToken/:otpToken")
     public async checkOtpToken(request: Request, response: Response, next: NextFunction) {
         await this.authService.checkOtpToken(request.body.phoneNumber, request.params.otpToken);
         return response.json({ success: true });
     }
 
+    /**
+     * @api{post} /api/user/auth/resend/token Resend otp token
+     * @apiName ResendOtp
+     * @apiGroup Auth
+     *
+     * @apiSuccess {Json} success:true
+     */
     @httpPost("/resend/token")
     public async resendOtpToken(request: Request, response: Response, next: NextFunction) {
         await this.authService.resendOtp(request.body.phoneNumber);
         return response.json({ success: true });
     }
 
+    /**
+     * @api{post} /api/user/auth/check/:token check token
+     * @apiName checkToken
+     * @apiGroup Auth
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiSuccess {Json} success:true
+     */
     @httpPost("/check/:token", passport.authenticate("jwt", { session: false }))
     public async checkToken(request: Request, response: Response, next: NextFunction) {
+        return response.json({ success: true });
+    }
+
+    /**
+     * @api{post} /api/user/auth/logout logout
+     * @apiName logout
+     * @apiGroup Auth
+     *
+     * @apiHeader {String} authorization authorization.
+     *
+     * @apiSuccess {Json} success:true
+     */
+    @httpPost("/logout", passport.authenticate("jwt", { session: false }))
+    public async logout(request: Request, response: Response, next: NextFunction) {
         return response.json({ success: true });
     }
 
@@ -62,18 +141,48 @@ export class Auth {
         response.json({ message: "Success! You can not see this without a token" });
     }
 
+    /**
+     * @api{get} /api/user/auth/facebook Authenticate facebook
+     * @apiName Authenticate facebook
+     * @apiGroup Auth
+     *
+     * @apiHeader {String} authorization authorization facebook.
+     *
+     * @apiSuccess {Json} success:true,
+     * @apiSuccess {Json} data:token
+     */
     @httpGet("/facebook", passport.authenticate("facebook"))
     public async loginFacebook(request, response: Response, next: NextFunction) {
-        response.status(200).json(this.authService.loginFacebook(request.user));
+        response.status(200).json({success: true, data: this.authService.loginFacebook(request.user)});
     }
 
+    /**
+     * @api{get} /api/user/auth/google Authenticate google
+     * @apiName Authenticate google
+     * @apiGroup Auth
+     *
+     * @apiHeader {String} authorization authorization google.
+     *
+     * @apiSuccess {Json} success:true,
+     * @apiSuccess {Json} data:token
+     */
     @httpGet("/google", passport.authenticate("google"))
     public async loginGoogle(request, response: Response, next: NextFunction) {
-        response.status(200).json(this.authService.loginGoogle(request.user));
+        response.status(200).json({success: true, data: this.authService.loginGoogle(request.user)});
     }
 
+    /**
+     * @api{get} /api/user/auth/twitter Authenticate twitter
+     * @apiName Authenticate twitter
+     * @apiGroup Auth
+     *
+     * @apiHeader {String} authorization authorization twitter.
+     *
+     * @apiSuccess {Json} success:true,
+     * @apiSuccess {Json} data:token
+     */
     @httpGet("/twitter", passport.authenticate("twitter"))
     public async loginTwitter(request, response: Response, next: NextFunction) {
-        response.status(200).json(this.authService.loginTwitter(request.user));
+        response.status(200).json({success: true, data: this.authService.loginTwitter(request.user)});
     }
 }
